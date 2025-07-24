@@ -12,9 +12,14 @@ option(INSTALL_TO_UPDATE_SERVER "Install to update server" OFF)
 set(UPDATE_SERVER_PATH "" CACHE PATH "Path to update server")
 string(TIMESTAMP PROJECT_BUILD_DATE "%Y-%m-%d")
 
+
+include(FetchContent)
+FetchContent_Declare(APCpp GIT_REPOSITORY https://github.com/N00byKing/APCpp.git GIT_TAG main)
+FetchContent_MakeAvailable(APCpp)
+
 set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>")
 
-set(GAME_FOLDER "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SonicFrontiers" CACHE STRING "The location of your game folder.")
+set(GAME_FOLDER "E:\\SteamLibrary\\steamapps\\common\\SonicFrontiers" CACHE STRING "The location of your game folder.")
 cmake_path(SET GAME_FOLDER_NORMALIZED NORMALIZE ${GAME_FOLDER})
 cmake_path(APPEND GAME_FOLDER_NORMALIZED "SonicFrontiers.exe" OUTPUT_VARIABLE SONIC_FRONTIERS_GAME_EXECUTABLE)
 
@@ -59,9 +64,7 @@ set_target_properties(mod
         VS_DEBUGGER_WORKING_DIRECTORY ${GAME_FOLDER_NORMALIZED}
 )
 
-foreach(LIB rangers-sdk detours)
-    target_link_libraries(mod PRIVATE ${LIB})
-endforeach()
+target_link_libraries(mod PRIVATE rangers-sdk detours APCpp)
 
 add_subdirectory(src)
 configure_file(mod.ini.in mod.ini)
@@ -73,6 +76,7 @@ cmake_path(APPEND GAME_FOLDER_NORMALIZED "Mods" OUTPUT_VARIABLE MODS_FOLDER)
 cmake_path(APPEND MODS_FOLDER "${PROJECT_NAME}" OUTPUT_VARIABLE MOD_FOLDER)
 
 install(TARGETS mod RUNTIME DESTINATION "${MOD_FOLDER}")
+install(TARGETS APCpp RUNTIME DESTINATION "${MOD_FOLDER}")
 install(DIRECTORY resources/ DESTINATION "${MOD_FOLDER}")
 install(FILES LICENSE.txt CHANGELOG.md "${CMAKE_CURRENT_BINARY_DIR}/mod.ini" DESTINATION "${MOD_FOLDER}")
 
