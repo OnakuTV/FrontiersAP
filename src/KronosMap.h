@@ -27,151 +27,151 @@ bool kronosIsSpawned24 = false;
 void kronosMapCheck(hh::game::GameManager* manager) {
 	if (manager->GetGameObject("PowerupSeed0")) {
 		if (manager->GetGameObject("PowerupSeed0")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned0) {
-			AP_SendItem(10241);
+			AP_SendItem(15000);
 			kronosIsSpawned0 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed1")) {
 		if (manager->GetGameObject("PowerupSeed1")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned1) {
-			AP_SendItem(10242);
+			AP_SendItem(15001);
 			kronosIsSpawned1 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed2")) {
 		if (manager->GetGameObject("PowerupSeed2")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned2) {
-			AP_SendItem(10243);
+			AP_SendItem(15002);
 			kronosIsSpawned2 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed3")) {
 		if (manager->GetGameObject("PowerupSeed3")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned3) {
-			AP_SendItem(10244);
+			AP_SendItem(15003);
 			kronosIsSpawned3 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed4")) {
 		if (manager->GetGameObject("PowerupSeed4")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned4) {
-			AP_SendItem(10245);
+			AP_SendItem(15004);
 			kronosIsSpawned4 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed5")) {
 		if (manager->GetGameObject("PowerupSeed5")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned5) {
-			AP_SendItem(10246);
+			AP_SendItem(15005);
 			kronosIsSpawned5 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed6")) {
 		if (manager->GetGameObject("PowerupSeed6")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned6) {
-			AP_SendItem(10247);
+			AP_SendItem(15006);
 			kronosIsSpawned6 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed7")) {
 		if (manager->GetGameObject("PowerupSeed7")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned7) {
-			AP_SendItem(10248);
+			AP_SendItem(15007);
 			kronosIsSpawned7 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed8")) {
 		if (manager->GetGameObject("PowerupSeed8")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned8) {
-			AP_SendItem(10249);
+			AP_SendItem(15008);
 			kronosIsSpawned8 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed9")) {
 		if (manager->GetGameObject("PowerupSeed9")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned9) {
-			AP_SendItem(10250);
+			AP_SendItem(15009);
 			kronosIsSpawned9 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed10")) {
 		if (manager->GetGameObject("PowerupSeed10")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned10) {
-			AP_SendItem(10251);
+			AP_SendItem(15010);
 			kronosIsSpawned10 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed11")) {
 		if (manager->GetGameObject("PowerupSeed11")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned11) {
-			AP_SendItem(10252);
+			AP_SendItem(15011);
 			kronosIsSpawned11 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed12")) {
 		if (manager->GetGameObject("PowerupSeed12")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned12) {
-			AP_SendItem(10253);
+			AP_SendItem(15012);
 			kronosIsSpawned12 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed13")) {
 		if (manager->GetGameObject("PowerupSeed13")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned13) {
-			AP_SendItem(10254);
+			AP_SendItem(15013);
 			kronosIsSpawned13 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed14")) {
 		if (manager->GetGameObject("PowerupSeed14")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned14) {
-			AP_SendItem(10255);
+			AP_SendItem(15014);
 			kronosIsSpawned14 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed15")) {
 		if (manager->GetGameObject("PowerupSeed15")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned15) {
-			AP_SendItem(10256);
+			AP_SendItem(15015);
 			kronosIsSpawned15 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed16")) {
 		if (manager->GetGameObject("PowerupSeed16")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned16) {
-			AP_SendItem(10257);
+			AP_SendItem(15016);
 			kronosIsSpawned16 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed17")) {
 		if (manager->GetGameObject("PowerupSeed17")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned17) {
-			AP_SendItem(10258);
+			AP_SendItem(15017);
 			kronosIsSpawned17 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed18")) {
 		if (manager->GetGameObject("PowerupSeed18")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned18) {
-			AP_SendItem(10259);
+			AP_SendItem(15018);
 			kronosIsSpawned18 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed19")) {
 		if (manager->GetGameObject("PowerupSeed19")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned19) {
-			AP_SendItem(10260);
+			AP_SendItem(15019);
 			kronosIsSpawned19 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed20")) {
 		if (manager->GetGameObject("PowerupSeed20")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned20) {
-			AP_SendItem(10261);
+			AP_SendItem(15020);
 			kronosIsSpawned20 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed21")) {
 		if (manager->GetGameObject("PowerupSeed21")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned21) {
-			AP_SendItem(10262);
+			AP_SendItem(15021);
 			kronosIsSpawned21 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed22")) {
 		if (manager->GetGameObject("PowerupSeed22")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned22) {
-			AP_SendItem(10263);
+			AP_SendItem(15022);
 			kronosIsSpawned22 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed23")) {
 		if (manager->GetGameObject("PowerupSeed23")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned23) {
-			AP_SendItem(10264);
+			AP_SendItem(15023);
 			kronosIsSpawned23 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed24")) {
 		if (manager->GetGameObject("PowerupSeed24")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !kronosIsSpawned24) {
-			AP_SendItem(10265);
+			AP_SendItem(15024);
 			kronosIsSpawned24 = true;
 		}
 	}

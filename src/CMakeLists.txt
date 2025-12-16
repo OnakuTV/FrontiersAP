@@ -10,5 +10,5 @@ target_sources(mod
     PRIVATE FILE_SET HEADERS FILES
         Pch.h
         utilities/Helpers.h
-
- "KronosDigSpots.h" "ChaosDigSpots.h" "OuranosDigSpots.h"  "KronosMemoryTokens.h"  "Cyberspace.h" "KronosMap.h" "AresMap.h" "OuranosMap.h")
+        utilities/SimpleIni.h
+)

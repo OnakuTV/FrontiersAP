@@ -30,175 +30,175 @@ bool aresIsSpawned28 = false;
 void aresMapCheck(hh::game::GameManager* manager) {
 	if (manager->GetGameObject("PowerupSeed0")) {
 		if (manager->GetGameObject("PowerupSeed0")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned0) {
-			AP_SendItem(12554);
+			AP_SendItem(25000);
 			aresIsSpawned0 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed1")) {
 		if (manager->GetGameObject("PowerupSeed1")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned1) {
-			AP_SendItem(12555);
+			AP_SendItem(25001);
 			aresIsSpawned1 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed2")) {
 		if (manager->GetGameObject("PowerupSeed2")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned2) {
-			AP_SendItem(12556);
+			AP_SendItem(25002);
 			aresIsSpawned2 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed3")) {
 		if (manager->GetGameObject("PowerupSeed3")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned3) {
-			AP_SendItem(12557);
+			AP_SendItem(25003);
 			aresIsSpawned3 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed4")) {
 		if (manager->GetGameObject("PowerupSeed4")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned4) {
-			AP_SendItem(12558);
+			AP_SendItem(25004);
 			aresIsSpawned4 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed5")) {
 		if (manager->GetGameObject("PowerupSeed5")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned5) {
-			AP_SendItem(12559);
+			AP_SendItem(25005);
 			aresIsSpawned5 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed6")) {
 		if (manager->GetGameObject("PowerupSeed6")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned6) {
-			AP_SendItem(12560);
+			AP_SendItem(25006);
 			aresIsSpawned6 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed7")) {
 		if (manager->GetGameObject("PowerupSeed7")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned7) {
-			AP_SendItem(12561);
+			AP_SendItem(25007);
 			aresIsSpawned7 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed8")) {
 		if (manager->GetGameObject("PowerupSeed8")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned8) {
-			AP_SendItem(12562);
+			AP_SendItem(25008);
 			aresIsSpawned8 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed9")) {
 		if (manager->GetGameObject("PowerupSeed9")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned9) {
-			AP_SendItem(12563);
+			AP_SendItem(25009);
 			aresIsSpawned9 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed10")) {
 		if (manager->GetGameObject("PowerupSeed10")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned10) {
-			AP_SendItem(12564);
+			AP_SendItem(25010);
 			aresIsSpawned10 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed11")) {
 		if (manager->GetGameObject("PowerupSeed11")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned11) {
-			AP_SendItem(12565);
+			AP_SendItem(25011);
 			aresIsSpawned11 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed12")) {
 		if (manager->GetGameObject("PowerupSeed12")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned12) {
-			AP_SendItem(12566);
+			AP_SendItem(25012);
 			aresIsSpawned12 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed13")) {
 		if (manager->GetGameObject("PowerupSeed13")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned13) {
-			AP_SendItem(12567);
+			AP_SendItem(25013);
 			aresIsSpawned13 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed14")) {
 		if (manager->GetGameObject("PowerupSeed14")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned14) {
-			AP_SendItem(12568);
+			AP_SendItem(25014);
 			aresIsSpawned14 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed15")) {
 		if (manager->GetGameObject("PowerupSeed15")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned15) {
-			AP_SendItem(12569);
+			AP_SendItem(25015);
 			aresIsSpawned15 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed16")) {
 		if (manager->GetGameObject("PowerupSeed16")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned16) {
-			AP_SendItem(12570);
+			AP_SendItem(25016);
 			aresIsSpawned16 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed17")) {
 		if (manager->GetGameObject("PowerupSeed17")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned17) {
-			AP_SendItem(12571);
+			AP_SendItem(25017);
 			aresIsSpawned17 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed18")) {
 		if (manager->GetGameObject("PowerupSeed18")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned18) {
-			AP_SendItem(12572);
+			AP_SendItem(25018);
 			aresIsSpawned18 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed19")) {
 		if (manager->GetGameObject("PowerupSeed19")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned19) {
-			AP_SendItem(12573);
+			AP_SendItem(25019);
 			aresIsSpawned19 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed20")) {
 		if (manager->GetGameObject("PowerupSeed20")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned20) {
-			AP_SendItem(12574);
+			AP_SendItem(25020);
 			aresIsSpawned20 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed21")) {
 		if (manager->GetGameObject("PowerupSeed21")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned21) {
-			AP_SendItem(12575);
+			AP_SendItem(25021);
 			aresIsSpawned21 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed22")) {
 		if (manager->GetGameObject("PowerupSeed22")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned22) {
-			AP_SendItem(12576);
+			AP_SendItem(25022);
 			aresIsSpawned22 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed23")) {
 		if (manager->GetGameObject("PowerupSeed23")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned23) {
-			AP_SendItem(12577);
+			AP_SendItem(25023);
 			aresIsSpawned23 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed24")) {
 		if (manager->GetGameObject("PowerupSeed24")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned24) {
-			AP_SendItem(12578);
+			AP_SendItem(25024);
 			aresIsSpawned24 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed25")) {
 		if (manager->GetGameObject("PowerupSeed25")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned25) {
-			AP_SendItem(12579);
+			AP_SendItem(25025);
 			aresIsSpawned25 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed26")) {
 		if (manager->GetGameObject("PowerupSeed26")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned26) {
-			AP_SendItem(12580);
+			AP_SendItem(25026);
 			aresIsSpawned26 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed27")) {
 		if (manager->GetGameObject("PowerupSeed27")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned27) {
-			AP_SendItem(12581);
+			AP_SendItem(25027);
 			aresIsSpawned27 = true;
 		}
 	}
 	if (manager->GetGameObject("PowerupSeed28")) {
 		if (manager->GetGameObject("PowerupSeed28")->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) == 1 && !aresIsSpawned28) {
-			AP_SendItem(12582);
+			AP_SendItem(25028);
 			aresIsSpawned28 = true;
 		}
 	}

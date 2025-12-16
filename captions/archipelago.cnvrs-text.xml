@@ -1,0 +1,8 @@
+<cnvrsText>
+  <sheet name="en" index="1">
+    <text name="archipelago_connected" id ="91239823">Connected to Archipelago</text>
+    <text name="archipelago_item_recieved" id="749574985">Received Item:
+     <var name="archipelago_item"/>
+    </text>
+  </sheet>
+</cnvrsText>

@@ -1,79 +1,81 @@
-bool cyberspaceIsSent0 = false;
-bool cyberspaceIsSent1 = false;
-bool cyberspaceIsSent2 = false;
-bool cyberspaceIsSent3 = false;
-bool cyberspaceIsSent4 = false;
-bool cyberspaceIsSent5 = false;
-bool cyberspaceIsSent6 = false;
-bool cyberspaceIsSent7 = false;
-bool cyberspaceIsSent8 = false;
-bool cyberspaceIsSent9 = false;
-bool cyberspaceIsSent10 = false;
-bool cyberspaceIsSent11 = false;
-bool cyberspaceIsSent12 = false;
-bool cyberspaceIsSent13 = false;
-bool cyberspaceIsSent14 = false;
-bool cyberspaceIsSent15 = false;
-bool cyberspaceIsSent16 = false;
-bool cyberspaceIsSent17 = false;
-bool cyberspaceIsSent18 = false;
-bool cyberspaceIsSent19 = false;
-bool cyberspaceIsSent20 = false;
-bool cyberspaceIsSent21 = false;
-bool cyberspaceIsSent22 = false;
-bool cyberspaceIsSent23 = false;
-bool cyberspaceIsSent24 = false;
-bool cyberspaceIsSent25 = false;
-bool cyberspaceIsSent26 = false;
-bool cyberspaceIsSent27 = false;
-bool cyberspaceIsSent28 = false;
-bool cyberspaceIsSent29 = false;
+std::vector<bool> sendList;
+std::list<app::save::CyberStageData> stagecodeList;
+std::vector<int> stageOrder = { 0, 18, 26, 1, 13, 5, 28, 4, 20, 11, 15, 21, 2, 22, 3, 7, 19, 8, 6, 23, 12, 17, 24, 10, 25, 9, 16, 27, 14, 29 };
 
-void cyberspaceChecks(app::save::GameData *data) {
+
+void cyberspaceChecks(app::save::GameData* data, std::vector<int> order) {
+    if (sendList.size() < 1) {
+        for (int i = 0; i < 30; i++) {
+            sendList.emplace_back(false);
+        }
+    }
+    if (stagecodeList.size() < 1) {
+        for (int i = 0; i < 30; i++) {
+            stagecodeList.emplace_back(data->stages.actStages[order.at(i)]);
+        }
+    }
+    else {
+        for (int i = 0; i < 30; i++) {
+            stagecodeList.pop_front();
+            stagecodeList.emplace_back(data->stages.actStages[order.at(i)]);
+        }
+    }
+    
+    //1-1 portal -> data.stages.actStages[0].flags
+    //Enter 1-1 -> 4-3 -> data.stages.actStages[25]
+
+    //stageCode from randomizedList, get Position in List, get stageCode from stagecodeList, find it in map -> send check
+    int pos = 0;
+    for (std::list<app::save::CyberStageData>::iterator it = stagecodeList.begin(); it != stagecodeList.end(); it++)
+    {
+        if ((it->flags == 55295 || it->flags == 51199 || it->flags == 63487 || it->flags == 59391) && !sendList.at(pos)) {
+            int id = pos * 7;
+            for (int i = 0; i < 7; i++) {
+                itemsToSend.push(50000 + id + i);
+            }
+            sendList[pos] = true;
+        }
+        pos++;
+    }
     /*
     * 
     * KRONOS
     * 
     */
-    if ((data->stages.actStages[0].flags == 55295 || data->stages.actStages[0].flags == 51199) && !cyberspaceIsSent0) {
-        for (int i = 0; i < 7; i++) {
-            AP_SendItem(10163+i);
-            cyberspaceIsSent0 = true;
-        }
-    }
+    /*
     if ((data->stages.actStages[18].flags == 55295 || data->stages.actStages[18].flags == 51199) && !cyberspaceIsSent1) {
         for (int i = 0; i < 7; i++) {
-            AP_SendItem(10170+i);
+            AP_SendItem(14007+i);
             cyberspaceIsSent1 = true;
         }
     }
     if ((data->stages.actStages[26].flags == 55295 || data->stages.actStages[26].flags == 51199) && !cyberspaceIsSent2) {
         for (int i = 0; i < 7; i++) {
-            AP_SendItem(10177+i);
+            AP_SendItem(14014+i);
             cyberspaceIsSent2 = true;
         }
     }
     if ((data->stages.actStages[1].flags == 55295 || data->stages.actStages[1].flags == 51199) && !cyberspaceIsSent3) {
         for (int i = 0; i < 7; i++) {
-            AP_SendItem(10184+i);
+            AP_SendItem(14021+i);
             cyberspaceIsSent3 = true;
         }
     }
     if ((data->stages.actStages[13].flags == 55295 || data->stages.actStages[13].flags == 51199) && !cyberspaceIsSent4) {
         for (int i = 0; i < 7; i++) {
-            AP_SendItem(10191+i);
+            AP_SendItem(14028+i);
             cyberspaceIsSent4 = true;
         }
     }
     if ((data->stages.actStages[5].flags == 55295 || data->stages.actStages[5].flags == 51199) && !cyberspaceIsSent5) {
         for (int i = 0; i < 7; i++) {
-            AP_SendItem(10198+i);
+            AP_SendItem(14035+i);
             cyberspaceIsSent5 = true;
         }
     }
     if ((data->stages.actStages[28].flags == 55295 || data->stages.actStages[28].flags == 51199) && !cyberspaceIsSent6) {
         for (int i = 0; i < 7; i++) {
-            AP_SendItem(10205+i);
+            AP_SendItem(14042+i);
             cyberspaceIsSent6 = true;
         }
     }
@@ -81,7 +83,7 @@ void cyberspaceChecks(app::save::GameData *data) {
     * 
     * ARES
     *
-    */
+
     if ((data->stages.actStages[4].flags == 55295 || data->stages.actStages[4].flags == 51199) && !cyberspaceIsSent7) {
         for (int i = 0; i < 7; i++) {
             AP_SendItem(12486+i);
@@ -128,7 +130,7 @@ void cyberspaceChecks(app::save::GameData *data) {
     * 
     * CHAOS
     * 
-    */
+
     if ((data->stages.actStages[3].flags == 55295 || data->stages.actStages[3].flags == 51199) && !cyberspaceIsSent14) {
         for (int i = 0; i < 7; i++) {
             AP_SendItem(14413 +i);
@@ -175,7 +177,7 @@ void cyberspaceChecks(app::save::GameData *data) {
     *
     * OURANOS
     *
-    */
+
     if ((data->stages.actStages[17].flags == 55295 || data->stages.actStages[17].flags == 51199) && !cyberspaceIsSent21) {
         for (int i = 0; i < 7; i++) {
             AP_SendItem(16329 +i);
@@ -229,5 +231,5 @@ void cyberspaceChecks(app::save::GameData *data) {
             AP_SendItem(16385 +i);
             cyberspaceIsSent29 = true;
         }
-    }
+    }*/
 }

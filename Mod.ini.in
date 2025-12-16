@@ -13,4 +13,8 @@ IncludeDirCount=0
 DependsCount=0
 DLLFile="${PROJECT_NAME}.dll"
 CodeFile=""
-ConfigSchemaFile=""
+ConfigSchemaFile="config.json"
+[ArchipelagoInformation]
+Address="archipelago.gg:39823"
+Username="Onaku_Frontiers"
+Password=""
