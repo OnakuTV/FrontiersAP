@@ -164,8 +164,7 @@ void kronosNewKocoCheck(std::vector<hh::game::ObjectData*> kronosNewKocoData, hh
 }
 void kronosPurpleCoinCheck(std::vector<hh::game::ObjectData*> kronosPurpleCoinData, hh::game::ObjectWorldChunk* world) {
 	if (kronosPurpleCoinSent.size() == 0) {
-		kronosPurpleCoinSent.reserve(100);
-		for (int i = 0; i < kronosPurpleCoinData.size(); i++) {
+		for (int i = 0; i < kronosPurpleCoinData.size()+1; i++) {
 			kronosPurpleCoinSent.emplace_back(false);
 		}
 	}
@@ -178,7 +177,6 @@ void kronosPurpleCoinCheck(std::vector<hh::game::ObjectData*> kronosPurpleCoinDa
 }
 void kronosKocoCheck(std::vector<hh::game::ObjectData*> kronosKocoData, hh::game::ObjectWorldChunk* world) {
 	if (kronosKocoSent.size() == 0) {
-		kronosKocoSent.reserve(400);
 		for (int i = 0; i < kronosKocoData.size(); i++) {
 			kronosKocoSent.emplace_back(false);
 		}
@@ -188,6 +186,8 @@ void kronosKocoCheck(std::vector<hh::game::ObjectData*> kronosKocoData, hh::game
 		if (!obj) {
 			continue;
 		}
+		csl::math::Vector3* scale = new csl::math::Vector3(5, 5, 5);
+		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
 		if (!obj->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) && !kronosKocoSent[i]) {
 			AP_SendItem(16000 + i);
 			kronosKocoSent[i] = true;

@@ -2,7 +2,7 @@ std::vector<bool> sent;
 
 void kronosMemCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
 	if (sent.size() == 0) {
-		for (int i = 0; i < data.size(); i++) {
+		for (int i = 0; i < data.size()+1; i++) {
 			sent.emplace_back(false);
 		}
 	}

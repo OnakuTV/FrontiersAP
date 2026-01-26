@@ -278,3 +278,90 @@ int lvlCounter = 0;
 int kocos = 0;
 int redPowerSeed = 0;
 int bluePowerSeed = 0;
+
+bool ga1120 = false;
+bool ga1130 = false;
+bool ga1134 = false;
+bool ga1136 = false;
+bool qe1080 = false;
+bool qe1100 = false;
+bool ga1125 = false;
+bool ga2120 = false;
+bool ga2134 = false;
+bool qe2080 = false;
+bool ga2136 = false;
+bool ga2135 = false;
+bool qe2135 = false;
+bool ga3130 = false;
+bool ga3135 = false;
+bool ga3134 = false;
+bool qe3090 = false;
+bool ga3136 = false;
+bool qe3150 = false;
+bool ga1132 = false;
+bool ga1131 = false;
+bool ga1135 = false;
+
+bool increaseSkillPoints = false;
+bool increaseRedSeeds = false;
+bool increaseBlueSeeds = false;
+
+bool sonicDied = false;
+
+bool kronosUnlockedMapChanged = true;
+bool aresUnlockedMapChanged = true;
+bool chaosUnlockedMapChanged = true;
+bool ouranosUnlockedMapChanged = true;
+
+std::vector<pair<string, bool>> unlockedKronosStages = { {"Portal1", false}, {"Portal7", false},{"Portal4", false}, {"Portal2", false},{"Portal3", false}, {"Portal6", false} };
+std::vector<pair<string, bool>> unlockedAresStages = { {"Portal1", false}, {"Portal0", false},{"Portal4", false}, {"Portal2", false},{"Portal5", false}, {"Portal6", false},{"Portal3", false} };
+std::vector<pair<string, bool>> unlockedChaosStages = { {"Portal0", false}, {"Portal1", false},{"Portal2", false}, {"Portal3", false},{"Portal4", false}, {"Portal5", false},{"Portal6", false} };
+std::vector<pair<string, bool>> unlockedOuranosStages = { {"Portal4", false}, {"Portal9", false},{"Portal5", false}, {"Portal7", false},{"Portal2", false}, {"Portal1", false},{"Portal6", false}, { "Portal3", false },{"Portal8", false} };
+std::vector<string> randomKronosStages;
+std::vector<string> randomAresStages;
+std::vector<string> randomChaosStages;
+std::vector<string> randomOuranosStages;
+std::map<string, int> cyberspaceStages = { {"w6d01", 0}, {"w8d01",18}, {"w9d04",26}, {"w6d02",1}, {"w7d04",13}, {"w6d06", 5},
+	{"w9d06",28}, {"w6d05",4}, {"w8d03",20}, {"w7d02",11}, {"w7d06",15}, {"w8d04",21}, {"w6d03",2}, {"w8d05",22}, {"w6d04",3},
+{"w6d08",7}, {"w8d02",19}, {"w6d09",8}, {"w6d07",6}, {"w8d06",23}, {"w7d03",12}, {"w7d08",17}, {"w9d02",24}, {"w7d01",10},
+	{"w9d03",25}, {"w6d10",9}, {"w7d07",16}, {"w9d05",27}, {"w7d05",14}, {"w9d07",29} };
+//{"1-1", 36}
+std::map<string, int> cyberspaceSRankTimesMap = { {"w6d01", 36}, {"w8d01",45}, {"w9d04",35}, {"w6d02",43}, {"w7d04",45}, {"w6d06", 45},
+	{"w9d06",38}, {"w6d05",45}, {"w8d03",22}, {"w7d02",30}, {"w7d06",32}, {"w8d04",38}, {"w6d03",60}, {"w8d05",40}, {"w6d04",42},
+{"w6d08",30}, {"w8d02",70}, {"w6d09",60}, {"w6d07",35}, {"w8d06",80}, {"w7d03",60}, {"w7d08",58}, {"w9d02",75}, {"w7d01",37},
+	{"w9d03",90}, {"w6d10",53}, {"w7d07",75}, {"w9d05",45}, {"w7d05",25}, {"w9d07",50} };
+
+vector<string> randomizedStages = { "w6d01","w8d01", "w9d04", "w6d02", "w7d04", "w6d06", "w9d06", "w6d05", "w8d03", "w7d02", "w7d06", "w8d04", "w6d03", "w8d05", "w6d04",
+"w6d08", "w8d02", "w6d09", "w6d07", "w8d06", "w7d03", "w7d08", "w9d02", "w7d01", "w9d03", "w6d10", "w7d07", "w9d05", "w7d05", "w9d07" };
+vector<int> randomizedOrder;
+
+std::map<app::player::BlackboardStatus::CombatFlag, bool> unlockedSkillsMap = {
+	{app::player::BlackboardStatus::CombatFlag::CROSS_SLASH, false}, {app::player::BlackboardStatus::CombatFlag::GRAND_SLAM, false}, {app::player::BlackboardStatus::CombatFlag::CYCLONE_KICK, false},
+	{app::player::BlackboardStatus::CombatFlag::PHANTOM_RUSH, false}, {app::player::BlackboardStatus::CombatFlag::PARRY, false}, {app::player::BlackboardStatus::CombatFlag::STOMP_ATTACK, false},
+	{app::player::BlackboardStatus::CombatFlag::HOMING_SHOT, false}, {app::player::BlackboardStatus::CombatFlag::QUICK_CYLOOP, false},{app::player::BlackboardStatus::CombatFlag::RECOVERY_SMASH, false},
+	{app::player::BlackboardStatus::CombatFlag::SPIN_DASH, false}, {app::player::BlackboardStatus::CombatFlag::AUTO_COMBO, false}, {app::player::BlackboardStatus::CombatFlag::AIR_TRICK, false},
+	{app::player::BlackboardStatus::CombatFlag::SONIC_BOOM, false}, {app::player::BlackboardStatus::CombatFlag::SPIN_SLASH, false}
+};
+std::vector<app::player::BlackboardStatus::CombatFlag> skillVector = {
+	app::player::BlackboardStatus::CombatFlag::CROSS_SLASH, app::player::BlackboardStatus::CombatFlag::GRAND_SLAM, app::player::BlackboardStatus::CombatFlag::CYCLONE_KICK,
+	app::player::BlackboardStatus::CombatFlag::PHANTOM_RUSH, app::player::BlackboardStatus::CombatFlag::PARRY, app::player::BlackboardStatus::CombatFlag::STOMP_ATTACK,
+	app::player::BlackboardStatus::CombatFlag::HOMING_SHOT, app::player::BlackboardStatus::CombatFlag::QUICK_CYLOOP,app::player::BlackboardStatus::CombatFlag::RECOVERY_SMASH,
+	app::player::BlackboardStatus::CombatFlag::SPIN_DASH, app::player::BlackboardStatus::CombatFlag::AUTO_COMBO, app::player::BlackboardStatus::CombatFlag::AIR_TRICK,
+	app::player::BlackboardStatus::CombatFlag::SONIC_BOOM, app::player::BlackboardStatus::CombatFlag::SPIN_SLASH
+};
+void itemCallback();
+void getItem(int, bool);
+void* itemRecieve(int);
+void (*f_getItem)(int64_t, bool);
+void getEmeralds(int, app::save::GameData*);
+void contactRange(hh::game::GameObject*, int, int);
+void unlockStages(hh::game::ObjectData*, hh::game::GameManager*, string, ucsl::memory::IAllocator*);
+void lockCyberspace(hh::game::ObjectData*, string, ucsl::memory::IAllocator*);
+void getSlotData();
+void setCyberspaceTimes(bool);
+void setMemoryTokenSanity(bool);
+void setMemoryTokenBundle(bool);
+void setKocoSanity(bool);
+void setChallengeKoco(bool);
+void setMusicSanity(bool);
+void setPurpleCoinSanity(bool);

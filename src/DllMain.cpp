@@ -9,7 +9,7 @@ void LoadPackfile(const char(&path)[Len]) {
 }
 
 void Init() {
-    LoadPackfile("text/text_archipelago_en.pac");
+    LoadPackfile("text/text_archipelago.pac");
 }
 
 HOOK(uint64_t, __fastcall, GameModeTitle_Enter, gameModeTitleEnterAddr, void* self) {

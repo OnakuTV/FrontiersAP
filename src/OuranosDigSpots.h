@@ -15,59 +15,6 @@ bool oDropIsSent13 = false;
 bool oDropIsSent14 = false;
 bool oDropIsSent15 = false;
 
-bool ouranosGearIsSent0 = false;
-bool ouranosGearIsSent1 = false;
-bool ouranosGearIsSent2 = false;
-bool ouranosGearIsSent3 = false;
-bool ouranosGearIsSent4 = false;
-bool ouranosGearIsSent5 = false;
-bool ouranosGearIsSent6 = false;
-bool ouranosGearIsSent7 = false;
-bool ouranosGearIsSent8 = false;
-bool ouranosGearIsSent9 = false;
-bool ouranosGearIsSent10 = false;
-bool ouranosGearIsSent11 = false;
-bool ouranosGearIsSent12 = false;
-bool ouranosGearIsSent13 = false;
-bool ouranosGearIsSent14 = false;
-bool ouranosGearIsSent15 = false;
-bool ouranosGearIsSent16 = false;
-bool ouranosGearIsSent17 = false;
-bool ouranosGearIsSent18 = false;
-bool ouranosGearIsSent19 = false;
-bool ouranosGearIsSent20 = false;
-
-bool ouranosGearIsEnabled0 = false;
-bool ouranosGearIsEnabled1 = false;
-bool ouranosGearIsEnabled2 = false;
-bool ouranosGearIsEnabled3 = false;
-bool ouranosGearIsEnabled4 = false;
-bool ouranosGearIsEnabled5 = false;
-bool ouranosGearIsEnabled6 = false;
-bool ouranosGearIsEnabled7 = false;
-bool ouranosGearIsEnabled8 = false;
-bool ouranosGearIsEnabled9 = false;
-bool ouranosGearIsEnabled10 = false;
-bool ouranosGearIsEnabled11 = false;
-bool ouranosGearIsEnabled12 = false;
-bool ouranosGearIsEnabled13 = false;
-bool ouranosGearIsEnabled14 = false;
-bool ouranosGearIsEnabled15 = false;
-bool ouranosGearIsEnabled16 = false;
-bool ouranosGearIsEnabled17 = false;
-bool ouranosGearIsEnabled18 = false;
-bool ouranosGearIsEnabled19 = false;
-bool ouranosGearIsEnabled20 = false;
-
-bool ouranosKeyIsSent0 = false;
-bool ouranosKeyIsSent1 = false;
-bool ouranosKeyIsSent2 = false;
-bool ouranosKeyIsSent3 = false;
-bool ouranosKeyIsSent4 = false;
-bool ouranosKeyIsSent5 = false;
-bool ouranosKeyIsSent6 = false;
-bool ouranosKeyIsSent7 = false;
-
 void ouranosDroppedItemCheck(hh::game::GameManager* manager) {
 	if (manager->GetGameObject("DroppedItem0")) {
 		if (manager->GetGameObject("SeqeunceItem") && !oDropIsSent0) {
@@ -251,6 +198,40 @@ void ouranosNewKocoCheck(std::vector<hh::game::ObjectData*> ouranosNewKocoData, 
 		if (world->GetWorldObjectStatusByObjectId(ouranosNewKocoData[i]->id).IsShutdown() && !ouranosNewKocoSent[i]) {
 			AP_SendItem(42500 + i);
 			ouranosNewKocoSent[i] = true;
+		}
+	}
+}
+std::vector<bool> ouranosPurpleCoinSent;
+std::vector<bool> ouranosKocoSent;
+void ouranosPurpleCoinCheck(std::vector<hh::game::ObjectData*> ouranosPurpleCoinData, hh::game::ObjectWorldChunk* world) {
+	if (ouranosPurpleCoinSent.size() == 0) {
+		for (int i = 0; i < ouranosPurpleCoinData.size() + 1; i++) {
+			ouranosPurpleCoinSent.emplace_back(false);
+		}
+	}
+	for (int i = 0; i < ouranosPurpleCoinData.size(); i++) {
+		if (world->GetWorldObjectStatusByObjectId(ouranosPurpleCoinData[i]->id).IsShutdown() && !ouranosPurpleCoinSent[i]) {
+			AP_SendItem(14000 + i);
+			ouranosPurpleCoinSent[i] = true;
+		}
+	}
+}
+void ouranosKocoCheck(std::vector<hh::game::ObjectData*> ouranosKocoData, hh::game::ObjectWorldChunk* world) {
+	if (ouranosKocoSent.size() == 0) {
+		for (int i = 0; i < ouranosKocoData.size(); i++) {
+			ouranosKocoSent.emplace_back(false);
+		}
+	}
+	for (int i = 0; i < ouranosKocoData.size(); i++) {
+		auto* obj = world->GetGameObject(ouranosKocoData[i]);
+		if (!obj) {
+			continue;
+		}
+		csl::math::Vector3* scale = new csl::math::Vector3(5, 5, 5);
+		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
+		if (!obj->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) && !ouranosKocoSent[i]) {
+			AP_SendItem(16000 + i);
+			ouranosKocoSent[i] = true;
 		}
 	}
 }

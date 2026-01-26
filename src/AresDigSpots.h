@@ -245,6 +245,8 @@ std::vector<bool> aresGearSent;
 std::vector<bool> aresKeySent;
 std::vector<bool> aresNewKocoSent;
 std::vector<bool> aresMusicSent;
+std::vector<bool> aresPurpleCoinSent;
+std::vector<bool> aresKocoSent;
 void aresDroppedGear(std::vector<hh::game::ObjectData*> aresGearData, hh::game::ObjectWorldChunk* world) {
 	if (aresGearSent.size() == 0) {
 		for (int i = 0; i < aresGearData.size(); i++) {
@@ -294,6 +296,38 @@ void aresNewKocoCheck(std::vector<hh::game::ObjectData*> aresNewKocoData, hh::ga
 		if (world->GetWorldObjectStatusByObjectId(aresNewKocoData[i]->id).IsShutdown() && !aresNewKocoSent[i]) {
 			AP_SendItem(22500 + i);
 			aresNewKocoSent[i] = true;
+		}
+	}
+}
+void aresPurpleCoinCheck(std::vector<hh::game::ObjectData*> aresPurpleCoinData, hh::game::ObjectWorldChunk* world) {
+	if (aresPurpleCoinSent.size() == 0) {
+		for (int i = 0; i < aresPurpleCoinData.size() + 1; i++) {
+			aresPurpleCoinSent.emplace_back(false);
+		}
+	}
+	for (int i = 0; i < aresPurpleCoinData.size(); i++) {
+		if (world->GetWorldObjectStatusByObjectId(aresPurpleCoinData[i]->id).IsShutdown() && !aresPurpleCoinSent[i]) {
+			AP_SendItem(24000 + i);
+			aresPurpleCoinSent[i] = true;
+		}
+	}
+}
+void aresKocoCheck(std::vector<hh::game::ObjectData*> aresKocoData, hh::game::ObjectWorldChunk* world) {
+	if (aresKocoSent.size() == 0) {
+		for (int i = 0; i < aresKocoData.size(); i++) {
+			aresKocoSent.emplace_back(false);
+		}
+	}
+	for (int i = 0; i < aresKocoData.size(); i++) {
+		auto* obj = world->GetGameObject(aresKocoData[i]);
+		if (!obj) {
+			continue;
+		}
+		csl::math::Vector3* scale = new csl::math::Vector3(5, 5, 5);
+		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
+		if (!obj->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) && !aresKocoSent[i]) {
+			AP_SendItem(26000 + i);
+			aresKocoSent[i] = true;
 		}
 	}
 }

@@ -22,10 +22,8 @@ bool cDropIsSent19 = false;
 void chaosDroppedItemCheck(hh::game::GameManager* manager) {
 	if (itemControl(manager->GetGameObject("DroppedItem0"))) {
 		if (manager->GetGameObject("DroppedItem0")->GetComponent<hh::physics::GOCCylinderCollider>()->flags.test(hh::physics::GOCCylinderCollider::Flag::ENABLED) == 0 && !cDropIsSent0) {
-			
 				AP_SendItem(30500);
 				cDropIsSent0 = true;
-			
 		}
 	}
 	if (itemControl(manager->GetGameObject("DroppedItem1"))) {
@@ -186,6 +184,8 @@ std::vector<bool> chaosGearSent;
 std::vector<bool> chaosKeySent;
 std::vector<bool> chaosNewKocoSent;
 std::vector<bool> chaosMusicSent;
+std::vector<bool> chaosPurpleCoinSent;
+std::vector<bool> chaosKocoSent;
 void chaosDroppedGear(std::vector<hh::game::ObjectData*> chaosGearData, hh::game::ObjectWorldChunk* world) {
 	if (chaosGearSent.size() == 0) {
 		for (int i = 0; i < chaosGearData.size(); i++) {
@@ -235,6 +235,38 @@ void chaosNewKocoCheck(std::vector<hh::game::ObjectData*> chaosNewKocoData, hh::
 		if (world->GetWorldObjectStatusByObjectId(chaosNewKocoData[i]->id).IsShutdown() && !chaosNewKocoSent[i]) {
 			AP_SendItem(32500 + i);
 			chaosNewKocoSent[i] = true;
+		}
+	}
+}
+void chaosPurpleCoinCheck(std::vector<hh::game::ObjectData*> chaosPurpleCoinData, hh::game::ObjectWorldChunk* world) {
+	if (chaosPurpleCoinSent.size() == 0) {
+		for (int i = 0; i < chaosPurpleCoinData.size() + 1; i++) {
+			chaosPurpleCoinSent.emplace_back(false);
+		}
+	}
+	for (int i = 0; i < chaosPurpleCoinData.size(); i++) {
+		if (world->GetWorldObjectStatusByObjectId(chaosPurpleCoinData[i]->id).IsShutdown() && !chaosPurpleCoinSent[i]) {
+			AP_SendItem(14000 + i);
+			chaosPurpleCoinSent[i] = true;
+		}
+	}
+}
+void chaosKocoCheck(std::vector<hh::game::ObjectData*> chaosKocoData, hh::game::ObjectWorldChunk* world) {
+	if (chaosKocoSent.size() == 0) {
+		for (int i = 0; i < chaosKocoData.size(); i++) {
+			chaosKocoSent.emplace_back(false);
+		}
+	}
+	for (int i = 0; i < chaosKocoData.size(); i++) {
+		auto* obj = world->GetGameObject(chaosKocoData[i]);
+		if (!obj) {
+			continue;
+		}
+		csl::math::Vector3* scale = new csl::math::Vector3(5, 5, 5);
+		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
+		if (!obj->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) && !chaosKocoSent[i]) {
+			AP_SendItem(16000 + i);
+			chaosKocoSent[i] = true;
 		}
 	}
 }
