@@ -9,12 +9,13 @@ AuthorURL="${PROJECT_AUTHOR_URL}"
 UpdateServer="${PROJECT_UPDATE_SERVER}"
 SaveFile=""
 ID="${PROJECT_AUTHOR}.${PROJECT_NAME}"
-IncludeDirCount=0
+IncludeDirCount=1
+IncludeDir0="image"
 DependsCount=0
 DLLFile="${PROJECT_NAME}.dll"
 CodeFile=""
 ConfigSchemaFile="config.json"
 [ArchipelagoInformation]
 Address="archipelago.gg:39823"
-Username="Onaku_Frontiers"
+Username=""
 Password=""
