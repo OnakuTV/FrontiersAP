@@ -22,154 +22,114 @@ bool itemControl(hh::game::GameObject* obj) {
 		}
 	}
 }
-void kronosDroppedItemCheck(hh::game::GameManager *manager) {
-	if (manager->GetGameObject("DroppedItem9")) {
-		if (!kDropIsSent0) {
-			if (manager->GetGameObject("SequenceItem")) {
-				itemsToSend.push(10500);
-				kDropIsSent0 = true;
-			}
+bool sphereColliderCheck(hh::game::GameObject* obj) {
+	if (obj) {
+		hh::physics::GOCSphereCollider* collider = obj->GetComponent<hh::physics::GOCSphereCollider>();
+		if (collider) {
+			return collider->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED);
 		}
 	}
-	if (manager->GetGameObject("DroppedItem10")) {
-		if (!kDropIsSent1) {
-			if (manager->GetGameObject("SequenceItem")) {
-				itemsToSend.push(10501);
-				kDropIsSent1 = true;
-			}
-		}
-	}
-	if (manager->GetGameObject("DroppedItem2")) {
-		if (!kDropIsSent2) {
-			if (manager->GetGameObject("SequenceItem")) {
-				itemsToSend.push(10502);
-				kDropIsSent2 = true;
-
-			}
-		}
-	}
-	if (manager->GetGameObject("DroppedItem3")) {
-		if (!kDropIsSent3) {
-			if (manager->GetGameObject("SequenceItem")) {
-				itemsToSend.push(10503);
-				kDropIsSent3 = true;
-			}
-		}
-	}
-	if (manager->GetGameObject("DroppedItem4")) {
-		if (!kDropIsSent4) {
-			if (manager->GetGameObject("SequenceItem")) {
-				itemsToSend.push(10504);
-				kDropIsSent4 = true;
-			}
-		}
-	}
-	if (manager->GetGameObject("DroppedItem5")) {
-		if (!kDropIsSent5) {
-			if (manager->GetGameObject("SequenceItem")) {
-				
-					itemsToSend.push(10505);
-					kDropIsSent5 = true;
-
-			}
-		}
-	}
-	if (manager->GetGameObject("DroppedItem6")) {
-		if (!kDropIsSent6) {
-			if (manager->GetGameObject("SequenceItem")) {
-				
-					itemsToSend.push(10506);
-					kDropIsSent6 = true;
-				
-			}	
-		}
-	}
-	if (manager->GetGameObject("DroppedItem7")) {
-		if (!kDropIsSent7) {
-			if (manager->GetGameObject("SequenceItem")) {
-					itemsToSend.push(10507);
-					kDropIsSent7 = true;
-			}
-		}
-	}
-	if (manager->GetGameObject("DroppedItem8")) {
-		if (!kDropIsSent8) {
-			if (manager->GetGameObject("SequenceItem")) {
-				
-					itemsToSend.push(10508);
-					kDropIsSent8 = true;
-				
-			}			
-		}
-	}
+	return true;
 }
-
+std::vector<bool> kronosDroppedItemSent;
 std::vector<bool> kronosGearSent;
 std::vector<bool> kronosKeySent;
 std::vector<bool> kronosNewKocoSent;
 std::vector<bool> kronosMusicSent;
 std::vector<bool> kronosPurpleCoinSent;
 std::vector<bool> kronosKocoSent;
-void kronosDroppedGear(std::vector<hh::game::ObjectData*> kronosGearData, hh::game::ObjectWorldChunk* world) {
+void kronosDroppedItemCheck(std::vector<hh::game::ObjectData*> droppedItemData, hh::game::ObjectWorldChunk* world) {
+	if (kronosDroppedItemSent.size() == 0) {
+		for (int i = 0; i < droppedItemData.size() + 1; i++) {
+			kronosDroppedItemSent.emplace_back(false);
+		}
+	}
+	for (int i = 0; i < droppedItemData.size(); i++) {
+		hh::game::GameObject* obj = world->GetGameObject(droppedItemData.at(i));
+		if (obj) {
+			hh::physics::GOCCylinderCollider* cylinder = obj->GetComponent<hh::physics::GOCCylinderCollider>();
+			if (cylinder) {
+				if (!cylinder->flags.test(hh::physics::GOCCylinderCollider::Flag::ENABLED)) {
+					itemsToSend.push(10500 + i);
+				}
+			}
+		}
+	}
+}
+void kronosDroppedGear(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
 	if (kronosGearSent.size() == 0) {
-		for (int i = 0; i < kronosGearData.size(); i++) {
+		for (int i = 0; i < data.size(); i++) {
 			kronosGearSent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < kronosGearData.size(); i++) {
-		if (world->GetWorldObjectStatusByObjectId(kronosGearData[i]->id).IsShutdown() && !kronosGearSent[i]) {
+	for (int i = 0; i < data.size(); i++) {
+		auto* obj = world->GetGameObject(data[i]);
+		if (!sphereColliderCheck(obj) && !kronosGearSent[i]) {
 			AP_SendItem(12000 + i);
 			kronosGearSent[i] = true;
 		}
 	}
 }
-void kronosDroppedKey(std::vector<hh::game::ObjectData*> kronosKeyData, hh::game::ObjectWorldChunk* world) {
+void kronosDroppedKey(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
 	if (kronosKeySent.size() == 0) {
-		for (int i = 0; i < kronosKeyData.size(); i++) {
+		for (int i = 0; i < data.size(); i++) {
 			kronosKeySent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < kronosKeyData.size(); i++) {
-		if (world->GetWorldObjectStatusByObjectId(kronosKeyData[i]->id).IsShutdown() && !kronosKeySent[i]) {
-			AP_SendItem(13000 + i);
-			kronosKeySent[i] = true;
+	for (int i = 0; i < data.size(); i++) {
+		auto* obj = world->GetGameObject(data[i]);
+		hh::physics::GOCCapsuleCollider* collider = obj->GetComponent<hh::physics::GOCCapsuleCollider>();
+		if (collider) {
+			if (!sphereColliderCheck(obj) && !collider->flags.test(hh::physics::GOCCapsuleCollider::Flag::ENABLED) && !kronosKeySent[i]) {
+				AP_SendItem(13000 + i);
+				kronosKeySent[i] = true;
+			}
+		}
+		else {
+			if (!sphereColliderCheck(obj) && !kronosKeySent[i]) {
+				AP_SendItem(13000 + i);
+				kronosKeySent[i] = true;
+			}
 		}
 	}
 }
-void kronosMusicCheck(std::vector<hh::game::ObjectData*> kronosMusicData, hh::game::ObjectWorldChunk* world) {
+void kronosMusicCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
 	if (kronosMusicSent.size() == 0) {
-		for (int i = 0; i < kronosMusicData.size(); i++) {
+		for (int i = 0; i < data.size(); i++) {
 			kronosMusicSent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < kronosMusicData.size(); i++) {
-		if (world->GetWorldObjectStatusByObjectId(kronosMusicData[i]->id).IsShutdown() && !kronosMusicSent[i]) {
+	for (int i = 0; i < data.size(); i++) {
+		auto* obj = world->GetGameObject(data[i]);
+		if (!sphereColliderCheck(obj) && !kronosMusicSent[i]) {
 			AP_SendItem(11500 + i);
 			kronosMusicSent[i] = true;
 		}
 	}
 }
-void kronosNewKocoCheck(std::vector<hh::game::ObjectData*> kronosNewKocoData, hh::game::ObjectWorldChunk* world) {
+void kronosNewKocoCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
 	if (kronosNewKocoSent.size() == 0) {
-		for (int i = 0; i < kronosNewKocoData.size(); i++) {
+		for (int i = 0; i < data.size(); i++) {
 			kronosNewKocoSent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < kronosNewKocoData.size(); i++) {
-		if (world->GetWorldObjectStatusByObjectId(kronosNewKocoData[i]->id).IsShutdown() && !kronosNewKocoSent[i]) {
+	for (int i = 0; i < data.size(); i++) {
+		auto* obj = world->GetGameObject(data[i]);
+		if (!sphereColliderCheck(obj) && !kronosNewKocoSent[i]) {
 			AP_SendItem(12500 + i);
 			kronosNewKocoSent[i] = true;
 		}
 	}
 }
-void kronosPurpleCoinCheck(std::vector<hh::game::ObjectData*> kronosPurpleCoinData, hh::game::ObjectWorldChunk* world) {
+void kronosPurpleCoinCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
 	if (kronosPurpleCoinSent.size() == 0) {
-		for (int i = 0; i < kronosPurpleCoinData.size()+1; i++) {
+		for (int i = 0; i < data.size()+1; i++) {
 			kronosPurpleCoinSent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < kronosPurpleCoinData.size(); i++) {
-		if (world->GetWorldObjectStatusByObjectId(kronosPurpleCoinData[i]->id).IsShutdown() && !kronosPurpleCoinSent[i]) {
+	for (int i = 0; i < data.size(); i++) {
+		auto* obj = world->GetGameObject(data[i]);
+		if (!sphereColliderCheck(obj) && !kronosPurpleCoinSent[i]) {
 			AP_SendItem(14000 + i);
 			kronosPurpleCoinSent[i] = true;
 		}
@@ -186,9 +146,9 @@ void kronosKocoCheck(std::vector<hh::game::ObjectData*> kronosKocoData, hh::game
 		if (!obj) {
 			continue;
 		}
-		csl::math::Vector3* scale = new csl::math::Vector3(5, 5, 5);
+		csl::math::Vector3* scale = new csl::math::Vector3(1, 1, 1);
 		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
-		if (!obj->GetComponent<hh::physics::GOCSphereCollider>()->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED) && !kronosKocoSent[i]) {
+		if (!sphereColliderCheck(obj) && !kronosKocoSent[i]) {
 			AP_SendItem(16000 + i);
 			kronosKocoSent[i] = true;
 		}

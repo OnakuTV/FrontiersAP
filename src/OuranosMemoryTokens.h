@@ -2,16 +2,17 @@
 std::vector<bool> sentOuranos;
 
 void ouranosMemCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
-	if (sentOuranos.size() == 0) {
-		for (int i = 0; i < data.size(); i++) {
-			sentOuranos.emplace_back(false);
+	if (sent.size() == 0) {
+		for (int i = 0; i < data.size() + 1; i++) {
+			sent.emplace_back(false);
 		}
 	}
 	for (int i = 0; i < data.size(); i++) {
-		if (world->GetWorldObjectStatusByObjectId(data[i]->id).IsShutdown() && !sentOuranos[i]) {
+		auto* obj = world->GetGameObject(data.at(i));
+		if (!sphereColliderCheck(obj) && !sentOuranos[i]) {
 			auto* yay = static_cast<heur::rfl::ObjSequenceItemSpawner*>(data[i]->spawnerData);
 			AP_SendItem(40000 + yay->no);
-			sentOuranos[i] = true;
+			sent[i] = true;
 		}
 	}
 }

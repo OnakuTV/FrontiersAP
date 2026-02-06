@@ -184,6 +184,11 @@ vector<hh::game::ObjectData*> aresSequnceItem;
 vector<hh::game::ObjectData*> chaosSequnceItem;
 vector<hh::game::ObjectData*> ouranosSequnceItem;
 
+vector<hh::game::ObjectData*> kronosDroppedItem;
+vector<hh::game::ObjectData*> aresDroppedItem;
+vector<hh::game::ObjectData*> chaosDroppedItem;
+vector<hh::game::ObjectData*> ouranosDroppedItem;
+
 vector<hh::game::ObjectData*> kronosPortalBit;
 vector<hh::game::ObjectData*> aresPortalBit;
 vector<hh::game::ObjectData*> chaosPortalBit;
@@ -360,7 +365,6 @@ void lockCyberspace(hh::game::ObjectData*, string, ucsl::memory::IAllocator*);
 void getSlotData();
 void setCyberspaceTimes(bool);
 void setMemoryTokenSanity(bool);
-void setMemoryTokenBundle(bool);
 void setKocoSanity(bool);
 void setChallengeKoco(bool);
 void setMusicSanity(bool);

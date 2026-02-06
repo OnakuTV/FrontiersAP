@@ -1,4 +1,5 @@
 std::vector<bool> sent;
+bool sphereColliderCheck(hh::game::GameObject*);
 
 void kronosMemCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
 	if (sent.size() == 0) {
@@ -7,7 +8,8 @@ void kronosMemCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWor
 		}
 	}
 	for (int i = 0; i < data.size(); i++) {
-		if (world->GetWorldObjectStatusByObjectId(data[i]->id).IsShutdown() && !sent[i]) {
+		auto* obj = world->GetGameObject(data.at(i));
+		if (!sphereColliderCheck(obj) && !sent[i]) {
 			auto* yay = static_cast<heur::rfl::ObjSequenceItemSpawner*>(data[i]->spawnerData);
 			AP_SendItem(10000 + yay->no);
 			sent[i] = true;

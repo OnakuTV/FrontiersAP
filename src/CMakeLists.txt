@@ -11,4 +11,5 @@ target_sources(mod
         Pch.h
         utilities/Helpers.h
         utilities/SimpleIni.h
+        KronosDigSpots.h
 )

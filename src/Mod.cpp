@@ -86,21 +86,23 @@ void set_goal(int goalSetting) {
 EXPORT void OnFrame() {
 	frameCounter++;
 	
+	printf("unk10: %d, activenormalop: %d\n", hh::game::GameApplication::GetInstance()->GetGameUpdater().unk10, hh::game::GameApplication::GetInstance()->GetGameUpdater().layersActiveDuringObjectPause);
 	hh::game::GameManager* manager = hh::game::GameManager::GetInstance();
 	if (manager->GetGameObject("Sonic")) {
 		textCounter++;
 		trapCounter++;
+		sonicDied = false;
+	}
+	else {
+		return;
 	}
 	if (hh::game::GameApplication::GetInstance()->GetGameUpdater().layersActiveDuringIngamePause != -1) {
 		return;
 	}
-	if (!manager->GetGameObject("Sonic")) {
-		return;
-	}
 	if (firstRun) {
-		//AP_Init("localhost:38281", "Sonic Frontiers", "Onaku", "None");
+		AP_Init("localhost:38281", "Sonic Frontiers", "Onaku", "None");
 		//AP_Init("archipelago.gg:51009", "Sonic Frontiers", "Onaku", "None");
-		AP_Init(serverAddress.c_str(), "Sonic Frontiers", serverUsername.c_str(), serverPassword.c_str());
+		//AP_Init(serverAddress.c_str(), "Sonic Frontiers", serverUsername.c_str(), serverPassword.c_str());
 		AP_SetItemClearCallback(itemCallback);
 
 		AP_SetItemRecvCallback(&getItem);
@@ -189,18 +191,17 @@ EXPORT void OnFrame() {
 		}
 		if (manager->GetService<app::save::SaveManager>())
 		{
-			app::save::SaveManager* savemgr = hh::game::GameManager::GetInstance()->GetService<app::save::SaveManager>();
+			app::save::SaveManager* savemgr = manager->GetService<app::save::SaveManager>();
 
 			app::save::SaveInterface* saveInt = savemgr->saveInterface;
 			app::save::GameData* gameData = saveInt->GetGameDataAccessor().data;
-			if (manager->GetGameObject("Sonic")) {
-				app::player::GOCPlayerBlackboard* sonicBlackboard = manager->GetGameObject("Sonic")->GetComponent<app::player::GOCPlayerBlackboard>();
-				for (auto& content : sonicBlackboard->blackboard->contents) {
-					if (content->GetNameHash() == csl::ut::HashString("BlackboardStatus")) {
-						app::player::BlackboardStatus& yippie = static_cast<app::player::BlackboardStatus&>(*content);
-						for (std::vector<app::player::BlackboardStatus::CombatFlag>::iterator it = skillVector.begin(); it != skillVector.end(); it++) {
-							yippie.SetCombatFlag(*it, unlockedSkillsMap.find(*it)->second);
-						}
+
+			app::player::GOCPlayerBlackboard* sonicBlackboard = manager->GetGameObject("Sonic")->GetComponent<app::player::GOCPlayerBlackboard>();
+			for (auto& content : sonicBlackboard->blackboard->contents) {
+				if (content->GetNameHash() == csl::ut::HashString("BlackboardStatus")) {
+					app::player::BlackboardStatus& yippie = static_cast<app::player::BlackboardStatus&>(*content);
+					for (std::vector<app::player::BlackboardStatus::CombatFlag>::iterator it = skillVector.begin(); it != skillVector.end(); it++) {
+						yippie.SetCombatFlag(*it, unlockedSkillsMap.find(*it)->second);
 					}
 				}
 			}
@@ -242,7 +243,8 @@ EXPORT void OnFrame() {
 							else if(strcmp(data->gameObjectClass, "DroppedItem") == 0){
 								auto* yippie = data->spawnerData;
 								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
-								lootBug->viewItemNum = 1;
+								lootBug->viewItemNum = 0;
+								kronosDroppedItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "FishCoin") == 0) {
 								kronosPurpleCoins.emplace_back(data);
@@ -269,7 +271,7 @@ EXPORT void OnFrame() {
 				if (memTokenSanity) {
 					kronosMemCheck(kronosSequnceItem, objChunk);
 				}
-				kronosDroppedItemCheck(manager);
+				kronosDroppedItemCheck(kronosDroppedItem, objChunk);
 				kronosDroppedGear(kronosPortalBit, objChunk);
 				kronosDroppedKey(kronosStorageKey, objChunk);
 				kronosMusicCheck(kronosMusicNote, objChunk);
@@ -346,7 +348,6 @@ EXPORT void OnFrame() {
 				getEmeralds(kronosEmeralds, gameData);
 			}
 			//Ares Island
-			/*
 			if (strcmp(levelInfo->GetStageName(), "w2r01") == 0) {
 				hh::game::ObjectWorldChunk* objChunk = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0];
 				if (sonicDied || aresUnlockedMapChanged) {
@@ -365,6 +366,12 @@ EXPORT void OnFrame() {
 						if (data) {
 							if (strcmp(data->gameObjectClass, "SequenceItem") == 0) {
 								aresSequnceItem.emplace_back(data);
+							}
+							else if (strcmp(data->gameObjectClass, "DroppedItem") == 0) {
+								auto* yippie = data->spawnerData;
+								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
+								lootBug->viewItemNum = 0;
+								aresDroppedItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "PortalBit") == 0) {
 								aresPortalBit.emplace_back(data);
@@ -404,7 +411,7 @@ EXPORT void OnFrame() {
 				}
 				aresDroppedGear(aresPortalBit, objChunk);
 				aresDroppedKey(aresStorageKey, objChunk);
-				aresDroppedItemCheck(manager);
+				aresDroppedItemCheck(aresDroppedItem, objChunk);
 				aresMapCheck(manager);
 				aresMusicCheck(aresMusicNote, objChunk);
 				aresNewKocoCheck(aresNewKoco, objChunk);
@@ -494,6 +501,12 @@ EXPORT void OnFrame() {
 							if (strcmp(data->gameObjectClass, "SequenceItem") == 0) {
 								chaosSequnceItem.emplace_back(data);
 							}
+							else if (strcmp(data->gameObjectClass, "DroppedItem") == 0) {
+								auto* yippie = data->spawnerData;
+								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
+								lootBug->viewItemNum = 0;
+								chaosDroppedItem.emplace_back(data);
+							}
 							else if (strcmp(data->gameObjectClass, "PortalBit") == 0) {
 								chaosPortalBit.emplace_back(data);
 							}
@@ -505,6 +518,12 @@ EXPORT void OnFrame() {
 							}
 							else if (strcmp(data->gameObjectClass, "MusicMemory") == 0) {
 								chaosMusicNote.emplace_back(data);
+							}
+							else if (strcmp(data->gameObjectClass, "FishCoin") == 0) {
+								chaosPurpleCoins.emplace_back(data);
+							}
+							else if (strcmp(data->gameObjectClass, "Kodama") == 0) {
+								chaosKocoSanity.emplace_back(data);
 							}
 						}
 					}
@@ -524,7 +543,7 @@ EXPORT void OnFrame() {
 				if (memTokenSanity) {
 					chaosMemCheck(chaosSequnceItem, objChunk);
 				}
-				chaosDroppedItemCheck(manager);
+				chaosDroppedItemCheck(chaosDroppedItem, objChunk);
 				chaosDroppedGear(chaosPortalBit, objChunk);
 				chaosDroppedKey(chaosStorageKey, objChunk);
 				chaosMapCheck(manager);
@@ -622,6 +641,12 @@ EXPORT void OnFrame() {
 							if (strcmp(data->gameObjectClass, "SequenceItem") == 0) {
 								ouranosSequnceItem.emplace_back(data);
 							}
+							else if (strcmp(data->gameObjectClass, "DroppedItem") == 0) {
+								auto* yippie = data->spawnerData;
+								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
+								lootBug->viewItemNum = 0;
+								ouranosDroppedItem.emplace_back(data);
+							}
 							else if (strcmp(data->gameObjectClass, "PortalBit") == 0) {
 								ouranosPortalBit.emplace_back(data);
 							}
@@ -633,6 +658,12 @@ EXPORT void OnFrame() {
 							}
 							else if (strcmp(data->gameObjectClass, "MusicMemory") == 0) {
 								ouranosMusicNote.emplace_back(data);
+							}
+							else if (strcmp(data->gameObjectClass, "FishCoin") == 0) {
+								ouranosPurpleCoins.emplace_back(data);
+							}
+							else if (strcmp(data->gameObjectClass, "Kodama") == 0) {
+								ouranosKocoSanity.emplace_back(data);
 							}
 						}
 					}
@@ -652,7 +683,7 @@ EXPORT void OnFrame() {
 				if (memTokenSanity) {
 					ouranosMemCheck(ouranosSequnceItem, objChunk);
 				}
-				ouranosDroppedItemCheck(manager);
+				ouranosDroppedItemCheck(ouranosDroppedItem, objChunk);
 				ouranosDroppedGear(ouranosPortalBit, objChunk);
 				ouranosDroppedKey(ouranosStorageKey, objChunk);
 				ouranosMapCheck(manager);
@@ -728,7 +759,6 @@ EXPORT void OnFrame() {
 				}
 				getEmeralds(ouranosEmeralds, gameData);
 			}
-			*/
 			if (manager->GetGameObject("Sonic") && strcmp(levelInfo->GetStageName(), "w1r03") == 0 && strcmp(levelInfo->GetStageName(), "w1r04") == 0 && strcmp(levelInfo->GetStageName(), "w2r01") == 0 && strcmp(levelInfo->GetStageName(), "w3r01") == 0) {
 				sonicDied = false;
 			}
