@@ -5,14 +5,14 @@ std::vector<bool> ouranosNewKocoSent;
 std::vector<bool> ouranosMusicSent;
 std::vector<bool> ouranosPurpleCoinSent;
 std::vector<bool> ouranosKocoSent;
-void ouranosDroppedItemCheck(std::vector<hh::game::ObjectData*> droppedItemData, hh::game::ObjectWorldChunk* world) {
+void ouranosDroppedItemCheck(std::vector<hh::game::ObjectData*> ouranosDroppedItemData, hh::game::ObjectWorldChunk* world) {
 	if (ouranosDroppedItemSent.size() == 0) {
-		for (int i = 0; i < droppedItemData.size() + 1; i++) {
+		for (int i = 0; i < ouranosDroppedItemData.size() + 1; i++) {
 			ouranosDroppedItemSent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < droppedItemData.size(); i++) {
-		hh::game::GameObject* obj = world->GetGameObject(droppedItemData.at(i));
+	for (int i = 0; i < ouranosDroppedItemData.size(); i++) {
+		hh::game::GameObject* obj = world->GetGameObject(ouranosDroppedItemData.at(i));
 		if (obj) {
 			hh::physics::GOCCylinderCollider* cylinder = obj->GetComponent<hh::physics::GOCCylinderCollider>();
 			if (cylinder) {
@@ -23,17 +23,19 @@ void ouranosDroppedItemCheck(std::vector<hh::game::ObjectData*> droppedItemData,
 		}
 	}
 }
-void ouranosDroppedGear(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
+void ouranosDroppedGear(std::vector<hh::game::ObjectData*> ouranosGearData, hh::game::ObjectWorldChunk* world) {
 	if (ouranosGearSent.size() == 0) {
-		for (int i = 0; i < data.size(); i++) {
+		for (int i = 0; i < ouranosGearData.size(); i++) {
 			ouranosGearSent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < data.size(); i++) {
-		auto* obj = world->GetGameObject(data[i]);
-		if (!sphereColliderCheck(obj) && !ouranosGearSent[i]) {
-			AP_SendItem(42000 + i);
-			ouranosGearSent[i] = true;
+	for (int i = 0; i < ouranosGearData.size(); i++) {
+		auto* obj = world->GetGameObject(ouranosGearData[i]);
+		if (obj) {
+			if (!sphereColliderCheck(obj) && !ouranosGearSent[i]) {
+				AP_SendItem(42000 + i);
+				ouranosGearSent[i] = true;
+			}
 		}
 	}
 }
@@ -45,17 +47,18 @@ void ouranosDroppedKey(std::vector<hh::game::ObjectData*> data, hh::game::Object
 	}
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data[i]);
-		hh::physics::GOCCapsuleCollider* collider = obj->GetComponent<hh::physics::GOCCapsuleCollider>();
-		if (collider) {
-			if (!sphereColliderCheck(obj) && !collider->flags.test(hh::physics::GOCCapsuleCollider::Flag::ENABLED) && !ouranosKeySent[i]) {
-				AP_SendItem(43000 + i);
-				ouranosKeySent[i] = true;
+		if (obj) {
+			if (hh::physics::GOCCylinderCollider* collider = obj->GetComponent<hh::physics::GOCCylinderCollider>()) {
+				if (!sphereColliderCheck(obj) && !collider->flags.test(hh::physics::GOCCylinderCollider::Flag::ENABLED) && !ouranosKeySent[i]) {
+					AP_SendItem(43000 + i);
+					ouranosKeySent[i] = true;
+				}
 			}
-		}
-		else {
-			if (!sphereColliderCheck(obj) && !ouranosKeySent[i]) {
-				AP_SendItem(43000 + i);
-				ouranosKeySent[i] = true;
+			else {
+				if (!sphereColliderCheck(obj) && !ouranosKeySent[i]) {
+					AP_SendItem(43000 + i);
+					ouranosKeySent[i] = true;
+				}
 			}
 		}
 	}
@@ -68,9 +71,11 @@ void ouranosMusicCheck(std::vector<hh::game::ObjectData*> data, hh::game::Object
 	}
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data[i]);
-		if (!sphereColliderCheck(obj) && !ouranosMusicSent[i]) {
-			AP_SendItem(41500 + i);
-			ouranosMusicSent[i] = true;
+		if (obj) {
+			if (!sphereColliderCheck(obj) && !ouranosMusicSent[i]) {
+				AP_SendItem(41500 + i);
+				ouranosMusicSent[i] = true;
+			}
 		}
 	}
 }
@@ -82,9 +87,11 @@ void ouranosNewKocoCheck(std::vector<hh::game::ObjectData*> data, hh::game::Obje
 	}
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data[i]);
-		if (!sphereColliderCheck(obj) && !ouranosNewKocoSent[i]) {
-			AP_SendItem(42500 + i);
-			ouranosNewKocoSent[i] = true;
+		if (obj) {
+			if (!sphereColliderCheck(obj) && !ouranosNewKocoSent[i]) {
+				AP_SendItem(42500 + i);
+				ouranosNewKocoSent[i] = true;
+			}
 		}
 	}
 }
@@ -96,9 +103,11 @@ void ouranosPurpleCoinCheck(std::vector<hh::game::ObjectData*> data, hh::game::O
 	}
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data[i]);
-		if (!sphereColliderCheck(obj) && !ouranosPurpleCoinSent[i]) {
-			AP_SendItem(44000 + i);
-			ouranosPurpleCoinSent[i] = true;
+		if (obj) {
+			if (!sphereColliderCheck(obj) && !ouranosPurpleCoinSent[i]) {
+				AP_SendItem(44000 + i);
+				ouranosPurpleCoinSent[i] = true;
+			}
 		}
 	}
 }

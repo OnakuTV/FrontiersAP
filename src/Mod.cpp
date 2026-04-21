@@ -85,24 +85,22 @@ void set_goal(int goalSetting) {
 }
 EXPORT void OnFrame() {
 	frameCounter++;
-	
-	printf("unk10: %d, activenormalop: %d\n", hh::game::GameApplication::GetInstance()->GetGameUpdater().unk10, hh::game::GameApplication::GetInstance()->GetGameUpdater().layersActiveDuringObjectPause);
 	hh::game::GameManager* manager = hh::game::GameManager::GetInstance();
 	if (manager->GetGameObject("Sonic")) {
 		textCounter++;
 		trapCounter++;
-		sonicDied = false;
 	}
 	else {
+		sonicDied = true;
 		return;
 	}
 	if (hh::game::GameApplication::GetInstance()->GetGameUpdater().layersActiveDuringIngamePause != -1) {
 		return;
 	}
 	if (firstRun) {
-		AP_Init("localhost:38281", "Sonic Frontiers", "Onaku", "None");
-		//AP_Init("archipelago.gg:51009", "Sonic Frontiers", "Onaku", "None");
-		//AP_Init(serverAddress.c_str(), "Sonic Frontiers", serverUsername.c_str(), serverPassword.c_str());
+		//AP_Init("localhost:38281", "Sonic Frontiers", "Onaku_Frontiers", "None");
+		//AP_Init("archipelago.gg:41411", "Sonic Frontiers", "Onaku_Frontiers", "None");
+		AP_Init(serverAddress.c_str(), "Sonic Frontiers", serverUsername.c_str(), serverPassword.c_str());
 		AP_SetItemClearCallback(itemCallback);
 
 		AP_SetItemRecvCallback(&getItem);
@@ -117,101 +115,98 @@ EXPORT void OnFrame() {
 		AP_Start();
 		firstRun = false;
 	}
-	if (frameCounter > 1) {
-		if (AP_GetConnectionStatus() == AP_ConnectionStatus::Authenticated && !connected) {
-			AP_RoomInfo info;
-			AP_GetRoomInfo(&info);
-			int hashSeed = 7;
-			for (int i = 0; i < info.seed_name.length(); i++) {
-				hashSeed = hashSeed * 31 + info.seed_name[i];
+	if (AP_GetConnectionStatus() == AP_ConnectionStatus::Authenticated && !connected) {
+		AP_RoomInfo info;
+		AP_GetRoomInfo(&info);
+		int hashSeed = 7;
+		for (int i = 0; i < info.seed_name.length(); i++) {
+			hashSeed = hashSeed * 31 + info.seed_name[i];
+		}
+		printf("Hash is: %d", hashSeed);
+		srand(hashSeed);
+		int numOfStages = randomizedStages.size();
+		randomizedOrder.emplace_back(cyberspaceStages.find("w6d01")->second);
+		randomizedStages.erase(randomizedStages.begin());
+		for (int i = 1; i < numOfStages; i++) {
+			int num = rand() % randomizedStages.size();
+			randomizedOrder.emplace_back(cyberspaceStages.find(randomizedStages[num])->second);
+			//printf("%d\n", randomizedOrder.back());
+			if (i < 7) {
+				randomKronosStages.emplace_back(randomizedStages[num].data());
 			}
-			printf("Hash is: %d", hashSeed);
-			srand(hashSeed);
-			int numOfStages = randomizedStages.size();
-			randomizedOrder.emplace_back(cyberspaceStages.find("w6d01")->second);
-			randomizedStages.erase(randomizedStages.begin());
-			for (int i = 1; i < numOfStages; i++) {
-				int num = rand() % randomizedStages.size();
-				randomizedOrder.emplace_back(cyberspaceStages.find(randomizedStages[num])->second);
-				//printf("%d\n", randomizedOrder.back());
-				if (i < 7) {
-					randomKronosStages.emplace_back(randomizedStages[num].data());
-				}
-				else if (i < 14) {
-					randomAresStages.emplace_back(randomizedStages[num].data());
-				}
-				else if (i < 21) {
-					randomChaosStages.emplace_back(randomizedStages[num].data());
-				}
-				else {
-					randomOuranosStages.emplace_back(randomizedStages[num].data());
-				}
-				randomizedStages.erase(randomizedStages.begin() + num);
-				//printf("%d\n", randomizedOrder.back());
+			else if (i < 14) {
+				randomAresStages.emplace_back(randomizedStages[num].data());
 			}
-			if (cyberspaceTimes) {
-				if (auto* banger = manager->GetService<app::level::StageInfo>()) {
-					for (int i = 0; i < banger->stages.size() - 1; i++) {
-						if (banger->stages[i]) {
-							if (banger->stages[i]->rankTimes[0] > 0) {
+			else if (i < 21) {
+				randomChaosStages.emplace_back(randomizedStages[num].data());
+			}
+			else {
+				randomOuranosStages.emplace_back(randomizedStages[num].data());
+			}
+			randomizedStages.erase(randomizedStages.begin() + num);
+			//printf("%d\n", randomizedOrder.back());
+		}
+		if (cyberspaceTimes) {
+			if (auto* banger = manager->GetService<app::level::StageInfo>()) {
+				for (int i = 0; i < banger->stages.size() - 1; i++) {
+					if (banger->stages[i]) {
+						if (banger->stages[i]->rankTimes[0] > 0) {
 
-								banger->stages[i]->rankTimes[0] = cyberspaceSRankTimesMap.find(banger->stages[i]->GetStageName())->second;
-							}
+							banger->stages[i]->rankTimes[0] = cyberspaceSRankTimesMap.find(banger->stages[i]->GetStageName())->second;
 						}
 					}
 				}
 			}
-			connected = true;
 		}
-		if (AP_GetConnectionStatus() != AP_ConnectionStatus::Authenticated) {
-			connected = false;
-			return;
-		}
-		auto* levelInfo = manager->GetService<app::level::LevelInfo>();
-		if (strcmp(levelInfo->stageData->name.c_str(), "w1r03")  != 0 && strcmp(levelInfo->stageData->name.c_str(), "w2r01") != 0 && strcmp(levelInfo->stageData->name.c_str(), "w3r01") != 0 && strcmp(levelInfo->stageData->name.c_str(), "w1r04") != 0) {
-			//printf(levelInfo->GetStageName());
-			sonicDied = true;
-		}
-		if (textCounter > 120) {
-			if (!apMessageQueue.empty()) {
-				if (auto* overlayService = manager->GetService<app::ui::UIOverlayService>()) {
-					auto* allocator = manager->GetAllocator();
-					auto* request = app::ui::RequestOverlayCaption::Create(allocator);
-					auto* caption = request->captions.Add({ .allocator = allocator });
+		connected = true;
+	}
+	if (AP_GetConnectionStatus() != AP_ConnectionStatus::Authenticated) {
+		connected = false;
+		return;
+	}
+	auto* levelInfo = manager->GetService<app::level::LevelInfo>();
+	if (textCounter > 120) {
+		if (!apMessageQueue.empty()) {
+			if (auto* overlayService = manager->GetService<app::ui::UIOverlayService>()) {
+				auto* allocator = manager->GetAllocator();
+				auto* request = app::ui::RequestOverlayCaption::Create(allocator);
+				auto* caption = request->captions.Add({ .allocator = allocator });
 
-					caption->label.copyFrom("archipelago_item_recieved");
-					caption->duration = 2.0f;
-					request->unk206 = 3;
-					request->AddVariable({ .allocator = allocator })->SetUntranslatedValue("archipelago_item", itemToStringMap.find(apMessageQueue.front())->second.c_str());
-					overlayService->QueueBeginRequest(request);
-					apMessageQueue.pop();
-				}
-				textCounter = 0;
+				caption->label.copyFrom("archipelago_item_recieved");
+				caption->duration = 3.0f;
+				request->unk206 = 3;
+				request->AddVariable({ .allocator = allocator })->SetUntranslatedValue("archipelago_item", itemToStringMap.find(apMessageQueue.front())->second.c_str());
+				overlayService->QueueBeginRequest(request);
+				apMessageQueue.pop();
 			}
+			textCounter = 0;
 		}
-		if (manager->GetService<app::save::SaveManager>())
-		{
-			app::save::SaveManager* savemgr = manager->GetService<app::save::SaveManager>();
+	}
+	if (manager->GetService<app::save::SaveManager>())
+	{
+		app::save::SaveManager* savemgr = manager->GetService<app::save::SaveManager>();
 
-			app::save::SaveInterface* saveInt = savemgr->saveInterface;
-			app::save::GameData* gameData = saveInt->GetGameDataAccessor().data;
+		app::save::SaveInterface* saveInt = savemgr->saveInterface;
+		app::save::GameData* gameData = saveInt->GetGameDataAccessor().data;
 
-			app::player::GOCPlayerBlackboard* sonicBlackboard = manager->GetGameObject("Sonic")->GetComponent<app::player::GOCPlayerBlackboard>();
-			for (auto& content : sonicBlackboard->blackboard->contents) {
-				if (content->GetNameHash() == csl::ut::HashString("BlackboardStatus")) {
-					app::player::BlackboardStatus& yippie = static_cast<app::player::BlackboardStatus&>(*content);
-					for (std::vector<app::player::BlackboardStatus::CombatFlag>::iterator it = skillVector.begin(); it != skillVector.end(); it++) {
-						yippie.SetCombatFlag(*it, unlockedSkillsMap.find(*it)->second);
-					}
+		app::player::GOCPlayerBlackboard* sonicBlackboard = manager->GetGameObject("Sonic")->GetComponent<app::player::GOCPlayerBlackboard>();
+		for (auto& content : sonicBlackboard->blackboard->contents) {
+			if (content->GetNameHash() == csl::ut::HashString("BlackboardStatus")) {
+				app::player::BlackboardStatus& yippie = static_cast<app::player::BlackboardStatus&>(*content);
+				for (std::vector<app::player::BlackboardStatus::CombatFlag>::iterator it = skillVector.begin(); it != skillVector.end(); it++) {
+					yippie.SetCombatFlag(*it, unlockedSkillsMap.find(*it)->second);
 				}
 			}
+		}
+		if (manager->GetGameObject("Sonic")) {
+
 			//Kronos Island
 			if (strcmp(levelInfo->GetStageName(), "w1r03") == 0) {
 				if (!test) {
 					test = true;
 				}
 				hh::game::ObjectWorldChunk* objChunk = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0];
-				if(sonicDied || kronosUnlockedMapChanged) {
+				if (sonicDied || kronosUnlockedMapChanged) {
 					if (kronosSequnceItem.size() > 0) {
 						kronosSequnceItem.clear();
 						kronosPortalBit.clear();
@@ -223,7 +218,7 @@ EXPORT void OnFrame() {
 					}
 					std::vector<hh::game::ObjectData*> sequenceItemVector;
 					for (int i = 0; i < objChunk->GetObjectStatuses().size(); i++) {
-						hh::game::ObjectData *data = objChunk->GetObjectStatuses()[i].objectData;
+						hh::game::ObjectData* data = objChunk->GetObjectStatuses()[i].objectData;
 						if (data) {
 							if (strcmp(data->gameObjectClass, "SequenceItem") == 0) {
 								kronosSequnceItem.emplace_back(data);
@@ -240,10 +235,12 @@ EXPORT void OnFrame() {
 							else if (strcmp(data->gameObjectClass, "MusicMemory") == 0) {
 								kronosMusicNote.emplace_back(data);
 							}
-							else if(strcmp(data->gameObjectClass, "DroppedItem") == 0){
+							else if (strcmp(data->gameObjectClass, "DroppedItem") == 0) {
+								/*
 								auto* yippie = data->spawnerData;
 								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
 								lootBug->viewItemNum = 0;
+								*/
 								kronosDroppedItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "FishCoin") == 0) {
@@ -268,9 +265,7 @@ EXPORT void OnFrame() {
 					}
 					kronosUnlockedMapChanged = false;
 				}
-				if (memTokenSanity) {
-					kronosMemCheck(kronosSequnceItem, objChunk);
-				}
+				kronosMemCheck(kronosSequnceItem, objChunk);
 				kronosDroppedItemCheck(kronosDroppedItem, objChunk);
 				kronosDroppedGear(kronosPortalBit, objChunk);
 				kronosDroppedKey(kronosStorageKey, objChunk);
@@ -347,12 +342,14 @@ EXPORT void OnFrame() {
 				}
 				getEmeralds(kronosEmeralds, gameData);
 			}
+			/*
 			//Ares Island
 			if (strcmp(levelInfo->GetStageName(), "w2r01") == 0) {
 				hh::game::ObjectWorldChunk* objChunk = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0];
 				if (sonicDied || aresUnlockedMapChanged) {
 					if (aresSequnceItem.size() > 0) {
 						aresSequnceItem.clear();
+						aresDroppedItem.clear();
 						aresPortalBit.clear();
 						aresStorageKey.clear();
 						aresNewKoco.clear();
@@ -406,9 +403,7 @@ EXPORT void OnFrame() {
 					}
 					aresUnlockedMapChanged = false;
 				}
-				if (memTokenSanity) {
-					aresMemCheck(aresSequnceItem, objChunk);
-				}
+				aresMemCheck(aresSequnceItem, objChunk);
 				aresDroppedGear(aresPortalBit, objChunk);
 				aresDroppedKey(aresStorageKey, objChunk);
 				aresDroppedItemCheck(aresDroppedItem, objChunk);
@@ -473,8 +468,8 @@ EXPORT void OnFrame() {
 				}
 				if (manager->GetGameObject("ChaosEmeraldStorage3")) {
 					contactRange(manager->GetGameObject("ChaosEmeraldStorage3"), aresKeys, 24);
-				}	
-			
+				}
+
 				gameData->worldFlags.worldDatas[1].intDatas[344] = aresMemToken;
 				gameData->worldFlags.worldDatas[1].byteFlags[0] = aresKeys;
 				gameData->worldFlags.worldDatas[1].byteFlags[1] = aresGears;
@@ -489,10 +484,13 @@ EXPORT void OnFrame() {
 				if (sonicDied || chaosUnlockedMapChanged) {
 					if (chaosSequnceItem.size() > 0) {
 						chaosSequnceItem.clear();
+						chaosDroppedItem.clear();
 						chaosPortalBit.clear();
 						chaosStorageKey.clear();
 						chaosNewKoco.clear();
 						chaosMusicNote.clear();
+						chaosPurpleCoins.clear();
+						chaosKocoSanity.clear();
 					}
 					std::vector<hh::game::ObjectData*> sequenceItemVector;
 					for (int i = 0; i < objChunk->GetObjectStatuses().size(); i++) {
@@ -629,10 +627,13 @@ EXPORT void OnFrame() {
 				if (sonicDied || ouranosUnlockedMapChanged) {
 					if (chaosSequnceItem.size() > 0) {
 						ouranosSequnceItem.clear();
+						ouranosDroppedItem.clear();
 						ouranosPortalBit.clear();
 						ouranosStorageKey.clear();
 						ouranosNewKoco.clear();
 						ouranosMusicNote.clear();
+						ouranosPurpleCoins.clear();
+						ouranosKocoSanity.clear();
 					}
 					std::vector<hh::game::ObjectData*> sequenceItemVector;
 					for (int i = 0; i < objChunk->GetObjectStatuses().size(); i++) {
@@ -759,12 +760,11 @@ EXPORT void OnFrame() {
 				}
 				getEmeralds(ouranosEmeralds, gameData);
 			}
-			if (manager->GetGameObject("Sonic") && strcmp(levelInfo->GetStageName(), "w1r03") == 0 && strcmp(levelInfo->GetStageName(), "w1r04") == 0 && strcmp(levelInfo->GetStageName(), "w2r01") == 0 && strcmp(levelInfo->GetStageName(), "w3r01") == 0) {
-				sonicDied = false;
-			}
+			*/
+			sonicDied = false;
 			cyberspaceChecks(gameData, randomizedOrder);
 			sendChecks();
-			
+
 			if (increaseRedSeeds) {
 				gameData->character.numPowerSeeds += 1;
 				increaseRedSeeds = false;
@@ -773,9 +773,8 @@ EXPORT void OnFrame() {
 				gameData->character.numGuardSeeds += 1;
 				increaseBlueSeeds = false;
 			}
-
-			frameCounter = 0;
 		}
+		frameCounter = 0;
 	}
 }
 void itemCallback() {
@@ -1159,7 +1158,6 @@ void contactRange(hh::game::GameObject* obj, int keys, int required) {
 void unlockStages(hh::game::ObjectData* objData, hh::game::GameManager* manager, string stageCode, ucsl::memory::IAllocator *bruh) {
 	if (objData) {
 		auto* portalData = static_cast<heur::rfl::ObjPortalSpawner*>(objData->spawnerData);
-		if (portalData->portalBitActivateCount > 0 || portalData->stageCode.Compare(stageCode.c_str()) != 0) {
 			portalData->portalBitActivateCount = 0;
 			portalData->stageCode.Set(stageCode.data(), 6, bruh);
 			if (manager->GetGameObject(objData->name)) {
@@ -1168,7 +1166,6 @@ void unlockStages(hh::game::ObjectData* objData, hh::game::GameManager* manager,
 				manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->ShutdownPendingObjects();
 				manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->Spawn(objData);
 			}
-		}
 	}
 }
 void lockCyberspace(hh::game::ObjectData* objData, string stageCode, ucsl::memory::IAllocator *bruh) {

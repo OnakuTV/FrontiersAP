@@ -16,6 +16,6 @@ DLLFile="${PROJECT_NAME}.dll"
 CodeFile=""
 ConfigSchemaFile="config.json"
 [ArchipelagoInformation]
-Address="archipelago.gg:39823"
+Address="archipelago.gg:38281"
 Username=""
 Password=""

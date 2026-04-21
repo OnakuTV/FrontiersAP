@@ -9,10 +9,12 @@ void kronosMemCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWor
 	}
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data.at(i));
-		if (!sphereColliderCheck(obj) && !sent[i]) {
-			auto* yay = static_cast<heur::rfl::ObjSequenceItemSpawner*>(data[i]->spawnerData);
-			AP_SendItem(10000 + yay->no);
-			sent[i] = true;
+		if (obj) {
+			if ((!obj->GetComponent<hh::game::GOCActivator>()->enabled || obj->GetWorldObjectStatus()->IsShutdown()) && !sent[i]) {
+				auto* yay = static_cast<heur::rfl::ObjSequenceItemSpawner*>(data[i]->spawnerData);
+				AP_SendItem(10000 + yay->no);
+				sent[i] = true;
+			}
 		}
 	}
 }
