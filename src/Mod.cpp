@@ -19,6 +19,7 @@
 #include "OuranosMap.h"
 #include "Mod.h"
 #include "utilities/SimpleIni.h"
+#include "Traps.h"
 
 using namespace std;
 using namespace hh::fnd;
@@ -76,17 +77,23 @@ int goal = 0;
 int hashSeed = 0;
 
 hh::game::GOComponent* portalContact;
-
+hh::game::GameObject* sonic;
 bool test = false;
 void set_goal(int goalSetting) {
 	goal = goalSetting;
-	//printf("This is Goal: %d", goalSetting);
+	printf("This is Goal: %d", goalSetting);
 	
 }
 EXPORT void OnFrame() {
 	frameCounter++;
 	hh::game::GameManager* manager = hh::game::GameManager::GetInstance();
+	hh::gfnd::GraphicsContext* tesert = hh::gfnd::GraphicsContext::GetInstance();
+
+	if (hh::game::GameApplication::GetInstance()->GetGameUpdater().layersActiveDuringIngamePause != -1) {
+		return;
+	}
 	if (manager->GetGameObject("Sonic")) {
+		hh::game::GameObject* sonic = manager->GetGameObject("Sonic");
 		textCounter++;
 		trapCounter++;
 	}
@@ -94,18 +101,16 @@ EXPORT void OnFrame() {
 		sonicDied = true;
 		return;
 	}
-	if (hh::game::GameApplication::GetInstance()->GetGameUpdater().layersActiveDuringIngamePause != -1) {
-		return;
-	}
 	if (firstRun) {
 		//AP_Init("localhost:38281", "Sonic Frontiers", "Onaku_Frontiers", "None");
-		//AP_Init("archipelago.gg:41411", "Sonic Frontiers", "Onaku_Frontiers", "None");
+		//AP_Init("archipelago.gg:51808", "Sonic Frontiers", "Onaku_Frontiers", "None");
 		AP_Init(serverAddress.c_str(), "Sonic Frontiers", serverUsername.c_str(), serverPassword.c_str());
 		AP_SetItemClearCallback(itemCallback);
-
 		AP_SetItemRecvCallback(&getItem);
+		AP_SetDeathLinkSupported(true);
 		AP_SetLocationCheckedCallback(itemRecieve);
-		AP_RegisterSlotDataIntCallback("Goal", &set_goal);
+		AP_RegisterSlotDataIntCallback("goal", &set_goal);
+		AP_RegisterSlotDataIntCallback("death_link", &setDeathlink);
 		AP_RegisterSlotDataIntCallback("cyberspace_times", &setCyberspaceTimes);
 		AP_RegisterSlotDataIntCallback("memory_token_sanity", &setMemoryTokenSanity);
 		AP_RegisterSlotDataIntCallback("koco_sanity", &setKocoSanity);
@@ -114,6 +119,7 @@ EXPORT void OnFrame() {
 		AP_RegisterSlotDataIntCallback("purple_coin_sanity", &setPurpleCoinSanity);
 		AP_Start();
 		firstRun = false;
+		currentTrap = new int(0);
 	}
 	if (AP_GetConnectionStatus() == AP_ConnectionStatus::Authenticated && !connected) {
 		AP_RoomInfo info;
@@ -122,7 +128,7 @@ EXPORT void OnFrame() {
 		for (int i = 0; i < info.seed_name.length(); i++) {
 			hashSeed = hashSeed * 31 + info.seed_name[i];
 		}
-		printf("Hash is: %d", hashSeed);
+		printf("Hash is: %d\n", hashSeed);
 		srand(hashSeed);
 		int numOfStages = randomizedStages.size();
 		randomizedOrder.emplace_back(cyberspaceStages.find("w6d01")->second);
@@ -192,9 +198,9 @@ EXPORT void OnFrame() {
 		app::player::GOCPlayerBlackboard* sonicBlackboard = manager->GetGameObject("Sonic")->GetComponent<app::player::GOCPlayerBlackboard>();
 		for (auto& content : sonicBlackboard->blackboard->contents) {
 			if (content->GetNameHash() == csl::ut::HashString("BlackboardStatus")) {
-				app::player::BlackboardStatus& yippie = static_cast<app::player::BlackboardStatus&>(*content);
+				app::player::BlackboardStatus& bbStatus = static_cast<app::player::BlackboardStatus&>(*content);
 				for (std::vector<app::player::BlackboardStatus::CombatFlag>::iterator it = skillVector.begin(); it != skillVector.end(); it++) {
-					yippie.SetCombatFlag(*it, unlockedSkillsMap.find(*it)->second);
+					bbStatus.SetCombatFlag(*it, unlockedSkillsMap.find(*it)->second);
 				}
 			}
 		}
@@ -215,6 +221,7 @@ EXPORT void OnFrame() {
 						kronosMusicNote.clear();
 						kronosPurpleCoins.clear();
 						kronosKocoSanity.clear();
+						kronosDroppedItem.clear();
 					}
 					std::vector<hh::game::ObjectData*> sequenceItemVector;
 					for (int i = 0; i < objChunk->GetObjectStatuses().size(); i++) {
@@ -251,7 +258,7 @@ EXPORT void OnFrame() {
 							}
 						}
 					}
-					//printf("Amount of Purple Coins: %d\n", kronosPurpleCoins.size());
+
 					int i = 0;
 					for (std::vector<pair<string, bool>>::iterator it = unlockedKronosStages.begin(); it != unlockedKronosStages.end(); it++) {
 						if (it->second == true) {
@@ -365,9 +372,6 @@ EXPORT void OnFrame() {
 								aresSequnceItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "DroppedItem") == 0) {
-								auto* yippie = data->spawnerData;
-								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
-								lootBug->viewItemNum = 0;
 								aresDroppedItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "PortalBit") == 0) {
@@ -500,9 +504,6 @@ EXPORT void OnFrame() {
 								chaosSequnceItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "DroppedItem") == 0) {
-								auto* yippie = data->spawnerData;
-								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
-								lootBug->viewItemNum = 0;
 								chaosDroppedItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "PortalBit") == 0) {
@@ -538,9 +539,7 @@ EXPORT void OnFrame() {
 					}
 					chaosUnlockedMapChanged = false;
 				}
-				if (memTokenSanity) {
-					chaosMemCheck(chaosSequnceItem, objChunk);
-				}
+				chaosMemCheck(chaosSequnceItem, objChunk);
 				chaosDroppedItemCheck(chaosDroppedItem, objChunk);
 				chaosDroppedGear(chaosPortalBit, objChunk);
 				chaosDroppedKey(chaosStorageKey, objChunk);
@@ -643,9 +642,6 @@ EXPORT void OnFrame() {
 								ouranosSequnceItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "DroppedItem") == 0) {
-								auto* yippie = data->spawnerData;
-								auto* lootBug = static_cast<heur::rfl::ObjDroppedItemSpawner*>(yippie);
-								lootBug->viewItemNum = 0;
 								ouranosDroppedItem.emplace_back(data);
 							}
 							else if (strcmp(data->gameObjectClass, "PortalBit") == 0) {
@@ -759,8 +755,11 @@ EXPORT void OnFrame() {
 					oRecievedGear = false;
 				}
 				getEmeralds(ouranosEmeralds, gameData);
+
+
 			}
 			*/
+			
 			sonicDied = false;
 			cyberspaceChecks(gameData, randomizedOrder);
 			sendChecks();
@@ -773,6 +772,41 @@ EXPORT void OnFrame() {
 				gameData->character.numGuardSeeds += 1;
 				increaseBlueSeeds = false;
 			}
+
+			if (*currentTrap == 0) {
+				//printf("Current Trap: %d", *currentTrap);
+				if (!trapQueue.empty()) {
+					currentTrap = &trapQueue.front();
+					trapQueue.pop();
+				}
+			}
+			//trapCounter = handleTrap(trapCounter, currentTrap, manager);
+
+			if (deathlink) {
+				hh::game::GameObject* sonichsm = manager->GetGameObject("Sonic");
+				if (sonichsm) {
+					app::player::GOCPlayerHsm* hsm = sonichsm->GetComponent<app::player::GOCPlayerHsm>();
+					if (hsm) {
+						if ((hsm->GetCurrentState() == 39 || hsm->GetCurrentState() == 40 || hsm->GetCurrentState() == 41 || hsm->GetCurrentState() == 42
+							|| hsm->GetCurrentState() == 43 || hsm->GetCurrentState() == 45) && !deathlinkActive) {
+							AP_DeathLinkSend("Sonic Died");
+						}
+						if (AP_DeathLinkPending()) {
+							hsm->ChangeState(39,1);
+							deathlinkActive = true;
+						}
+						if((hsm->GetCurrentState() != 39 && hsm->GetCurrentState() != 40 && hsm->GetCurrentState() != 41 && hsm->GetCurrentState() != 42
+							&& hsm->GetCurrentState() != 43 && hsm->GetCurrentState() != 45)){
+							if (deathlinkActive) {
+								AP_DeathLinkClear();
+								deathlinkActive = false;
+							}
+						}
+
+					}
+				}
+			}
+			
 		}
 		frameCounter = 0;
 	}
@@ -852,19 +886,20 @@ void getItem(int id, bool alert) {
 			ouranosKeys++;
 		}
 		else if (id == KronosBlueChaosEmerald) {
-			if (kronosEmeralds < 7) {
+			progressiveEmeralds++;
+			if (progressiveEmeralds < 7) {
 				kronosEmeralds++;
 				return;
 			}
-			if (aresEmeralds < 7) {
+			else if (progressiveEmeralds < 13) {
 				aresEmeralds++;
 				return;
 			}
-			if (chaosEmeralds < 7) {
+			else if (progressiveEmeralds < 19) {
 				chaosEmeralds++;
 				return;
 			}
-			if (ouranosEmeralds < 7) {
+			else{
 				ouranosEmeralds++;
 				return;
 			}
@@ -1114,7 +1149,21 @@ void getItem(int id, bool alert) {
 		if (id == GrandSlam) {
 			unlockedSkillsMap.find(app::player::BlackboardStatus::CombatFlag::GRAND_SLAM)->second = true;
 		}
-		apMessageQueue.emplace(id);
+		if (id == WaterTrap && alert) {
+			trapQueue.emplace(1);
+		}
+		if (id == RingTrap && alert) {
+			trapQueue.emplace(2);
+		}
+		if (id == AutorunTrap && alert) {
+			trapQueue.emplace(3);
+		}
+		if (id == FireTrap && alert) {
+			trapQueue.emplace(4);
+		}
+		if (alert) {
+			apMessageQueue.emplace(id);
+		}
 }
 void getEmeralds(int emeralds, app::save::GameData* gameData) {
 	if (emeralds == 1) {
@@ -1158,6 +1207,8 @@ void contactRange(hh::game::GameObject* obj, int keys, int required) {
 void unlockStages(hh::game::ObjectData* objData, hh::game::GameManager* manager, string stageCode, ucsl::memory::IAllocator *bruh) {
 	if (objData) {
 		auto* portalData = static_cast<heur::rfl::ObjPortalSpawner*>(objData->spawnerData);
+		if (portalData->portalBitActivateCount != 0) {
+
 			portalData->portalBitActivateCount = 0;
 			portalData->stageCode.Set(stageCode.data(), 6, bruh);
 			if (manager->GetGameObject(objData->name)) {
@@ -1166,6 +1217,7 @@ void unlockStages(hh::game::ObjectData* objData, hh::game::GameManager* manager,
 				manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->ShutdownPendingObjects();
 				manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->Spawn(objData);
 			}
+		}
 	}
 }
 void lockCyberspace(hh::game::ObjectData* objData, string stageCode, ucsl::memory::IAllocator *bruh) {
@@ -1198,3 +1250,6 @@ void setPurpleCoinSanity(bool enabled) {
 	purpleSanity = enabled;
 }
 
+void setDeathlink(bool enabled) {
+	deathlink = enabled;
+}

@@ -9,7 +9,7 @@ void chaosMemCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorl
 	}
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data.at(i));
-		if (!sphereColliderCheck(obj) && !sentChaos[i]) {
+		if (effectCheck(obj) && !sent[i]) {
 			auto* yay = static_cast<heur::rfl::ObjSequenceItemSpawner*>(data[i]->spawnerData);
 			AP_SendItem(30000 + yay->no);
 			sent[i] = true;

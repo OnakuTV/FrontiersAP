@@ -29,13 +29,19 @@ bool effectCheck(hh::game::GameObject* obj) {
 		hh::eff::GOCEffect* eff = obj->GetComponent<hh::eff::GOCEffect>();
 		if (eff) {
 			if (eff->newEffects.size() > 0) {
-				printf("Effect Name: %s", eff->newEffects[0].handle.GetName());
-				if (eff->newEffects[0].handle.GetName()) {
-					if (strcmp(eff->newEffects[0].handle.GetName(), "ef_ob_portalbit_move01") == 0) {
+				const char* name = eff->newEffects[0].handle.GetName();
+				if (name) {
+					if (strcmp(name, "ef_ob_portalbit_move01") == 0 || strcmp(name, "ef_ob_portalbit_move02") == 0 || strcmp(name, "ef_ob_portalbit_move03") == 0 || strcmp(name, "ef_ob_portalbit_move04") == 0) {
 						return true;
 					}
-					else {
-						return false;
+				}
+
+			}
+			if (eff->newEffects.size() == 2) {
+				const char* name2 = eff->newEffects[1].handle.GetName();
+				if (name2) {
+					if (strcmp(name2, "ef_ob_spanner_move01") == 0) {
+						return true;
 					}
 				}
 			}
@@ -47,10 +53,9 @@ bool sphereColliderCheck(hh::game::GameObject* obj) {
 	if (obj) {
 		hh::physics::GOCSphereCollider* collider = obj->GetComponent<hh::physics::GOCSphereCollider>();
 		if (collider) {
-			//printf("%s: %d\n", obj->name.c_str(), collider->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED));
+			printf("%s: %d\n", obj->name.c_str(), collider->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED));
 			return collider->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED);
 		}
-		return false;
 	}
 	return true;
 }
@@ -62,8 +67,8 @@ std::vector<bool> kronosMusicSent;
 std::vector<bool> kronosPurpleCoinSent;
 std::vector<bool> kronosKocoSent;
 void kronosDroppedItemCheck(std::vector<hh::game::ObjectData*> kronosDroppedItemData, hh::game::ObjectWorldChunk* world) {
-	if (kronosDroppedItemSent.size() == 0) {
-		for (int i = 0; i < kronosDroppedItemData.size() + 1; i++) {
+	if (kronosDroppedItemSent.size() != kronosDroppedItemData.size()) {
+		for (int i = kronosDroppedItemSent.size(); i < kronosDroppedItemData.size() + 1; i++) {
 			kronosDroppedItemSent.emplace_back(false);
 		}
 	}
@@ -72,7 +77,7 @@ void kronosDroppedItemCheck(std::vector<hh::game::ObjectData*> kronosDroppedItem
 		if (obj) {
 			hh::physics::GOCCylinderCollider* cylinder = obj->GetComponent<hh::physics::GOCCylinderCollider>();
 			if (cylinder) {
-				if (!cylinder->flags.test(hh::physics::GOCCylinderCollider::Flag::ENABLED) && !kronosDroppedItemSent[i]) {
+				if (cylinder->flags.bits == 0 && !kronosDroppedItemSent[i]) {
 					itemsToSend.push(10500 + i);
 					kronosDroppedItemSent[i] = true;
 				}

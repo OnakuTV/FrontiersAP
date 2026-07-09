@@ -32,7 +32,7 @@ void ouranosDroppedGear(std::vector<hh::game::ObjectData*> ouranosGearData, hh::
 	for (int i = 0; i < ouranosGearData.size(); i++) {
 		auto* obj = world->GetGameObject(ouranosGearData[i]);
 		if (obj) {
-			if (!sphereColliderCheck(obj) && !ouranosGearSent[i]) {
+			if (effectCheck(obj) && !ouranosGearSent[i]) {
 				AP_SendItem(42000 + i);
 				ouranosGearSent[i] = true;
 			}
@@ -122,7 +122,7 @@ void ouranosKocoCheck(std::vector<hh::game::ObjectData*> ouranosKocoData, hh::ga
 		if (!obj) {
 			continue;
 		}
-		csl::math::Vector3* scale = new csl::math::Vector3(1, 1, 1);
+		csl::math::Vector3* scale = new csl::math::Vector3(12, 12, 12);
 		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
 		if (!sphereColliderCheck(obj) && !ouranosKocoSent[i]) {
 			AP_SendItem(46000 + i);

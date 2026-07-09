@@ -1,3 +1,6 @@
+#include <string>
+#include <vector>
+using namespace std;
 const int offset = 101000;
 enum items {
 	kMemToken = offset,
@@ -85,11 +88,12 @@ enum items {
 	Unlocked4dash7 = offset + 83,
 	Unlocked4dash8 = offset + 84,
 	Unlocked4dash9 = offset + 85,
-	KronosKeyBundle = offset + 86,
-	AresKeyBundle = offset + 87,
-	ChaosKeyBundle = offset + 88,
-	OuranosKeyBundle = offset + 89,
-	Victory = offset + 90,
+	Victory = offset + 86,
+
+	WaterTrap = offset + 200,
+	RingTrap = offset + 201,
+	AutorunTrap = offset + 202,
+	FireTrap = offset + 203,
 };
 
 std::map <int, string> itemToStringMap = {
@@ -105,7 +109,7 @@ std::map <int, string> itemToStringMap = {
 {oMemToken,"Ouranos Memory Token"},
 {oPortalGear,"Ouranos Portal Gear"},
 {oVaultKey,"Ouranos Vault Key"},
-{KronosBlueChaosEmerald,"Kronos Blue Chaos Emerald"},
+{KronosBlueChaosEmerald,"Progressive Chaos Emerald"},
 {KronosRedChaosEmerald,"Kronos Red Chaos Emerald"},
 {KronosGreenChaosEmerald,"Kronos Green Chaos Emerald"},
 {KronosYellowChaosEmerald,"Kronos Yellow Chaos Emerald"},
@@ -135,7 +139,7 @@ std::map <int, string> itemToStringMap = {
 {OuranosMemTreasure,"Ouranos Memory Treasure"},
 {RedPowerSeed,"Red Power Seed"},
 {BluePowerSeed,"Blue Power Seed"},
-{Kocos20,"Kocos (20)"},
+{Kocos20,"Nothing!"},
 {PhantomRush,"Phantom Rush"},
 {AirTrick,"Air Trick"},
 {StompAttack,"Stomp Attack"},
@@ -149,35 +153,39 @@ std::map <int, string> itemToStringMap = {
 {CycloneKick,"Cyclone Kick"},
 {CrossSlash,"Cross Slash"},
 {GrandSlam,"Grand Slam"},
-{Unlocked1dash2,"1-2 Unlocked"},
-{Unlocked1dash3,"1-3 Unlocked"},
-{Unlocked1dash4,"1-4 Unlocked"},
-{Unlocked1dash5,"1-5 Unlocked"},
-{Unlocked1dash6,"1-6 Unlocked"},
-{Unlocked1dash7,"1-7 Unlocked"},
-{Unlocked2dash1,"2-1 Unlocked"},
-{Unlocked2dash2,"2-2 Unlocked"},
-{Unlocked2dash3,"2-3 Unlocked"},
-{Unlocked2dash4,"2-4 Unlocked"},
-{Unlocked2dash5,"2-5 Unlocked"},
-{Unlocked2dash6,"2-6 Unlocked"},
-{Unlocked2dash7,"2-7 Unlocked"},
-{Unlocked3dash1,"3-1 Unlocked"},
-{Unlocked3dash2,"3-2 Unlocked"},
-{Unlocked3dash3,"3-3 Unlocked"},
-{Unlocked3dash4,"3-4 Unlocked"},
-{Unlocked3dash5,"3-5 Unlocked"},
-{Unlocked3dash6,"3-6 Unlocked"},
-{Unlocked3dash7,"3-7 Unlocked"},
-{Unlocked4dash1,"4-1 Unlocked"},
-{Unlocked4dash2,"4-2 Unlocked"},
-{Unlocked4dash3,"4-3 Unlocked"},
-{Unlocked4dash4,"4-4 Unlocked"},
-{Unlocked4dash5,"4-5 Unlocked"},
-{Unlocked4dash6,"4-6 Unlocked"},
-{Unlocked4dash7,"4-7 Unlocked"},
-{Unlocked4dash8,"4-8 Unlocked"},
-{Unlocked4dash9,"4-9 Unlocked"},
+{Unlocked1dash2,"1-2 Portal Unlocked"},
+{Unlocked1dash3,"1-3 Portal Unlocked"},
+{Unlocked1dash4,"1-4 Portal Unlocked"},
+{Unlocked1dash5,"1-5 Portal Unlocked"},
+{Unlocked1dash6,"1-6 Portal Unlocked"},
+{Unlocked1dash7,"1-7 Portal Unlocked"},
+{Unlocked2dash1,"2-1 Portal Unlocked"},
+{Unlocked2dash2,"2-2 Portal Unlocked"},
+{Unlocked2dash3,"2-3 Portal Unlocked"},
+{Unlocked2dash4,"2-4 Portal Unlocked"},
+{Unlocked2dash5,"2-5 Portal Unlocked"},
+{Unlocked2dash6,"2-6 Portal Unlocked"},
+{Unlocked2dash7,"2-7 Portal Unlocked"},
+{Unlocked3dash1,"3-1 Portal Unlocked"},
+{Unlocked3dash2,"3-2 Portal Unlocked"},
+{Unlocked3dash3,"3-3 Portal Unlocked"},
+{Unlocked3dash4,"3-4 Portal Unlocked"},
+{Unlocked3dash5,"3-5 Portal Unlocked"},
+{Unlocked3dash6,"3-6 Portal Unlocked"},
+{Unlocked3dash7,"3-7 Portal Unlocked"},
+{Unlocked4dash1,"4-1 Portal Unlocked"},
+{Unlocked4dash2,"4-2 Portal Unlocked"},
+{Unlocked4dash3,"4-3 Portal Unlocked"},
+{Unlocked4dash4,"4-4 Portal Unlocked"},
+{Unlocked4dash5,"4-5 Portal Unlocked"},
+{Unlocked4dash6,"4-6 Portal Unlocked"},
+{Unlocked4dash7,"4-7 Portal Unlocked"},
+{Unlocked4dash8,"4-8 Portal Unlocked"},
+{Unlocked4dash9,"4-9 Portal Unlocked"},
+{WaterTrap,"Water Trap"},
+{RingTrap,"Ring Trap"},
+{AutorunTrap,"Auto Run Trap"},
+{FireTrap,"Fire Trap"},
 };
 vector<hh::game::ObjectData*> kronosSequnceItem;
 vector<hh::game::ObjectData*> aresSequnceItem;
@@ -247,6 +255,7 @@ int kronosEmeralds = 0;
 int aresEmeralds = 0;
 int chaosEmeralds = 0;
 int ouranosEmeralds = 0;
+int progressiveEmeralds = 0;
 
 bool firstRun = true;
 bool firstSend = true;
@@ -312,11 +321,16 @@ bool increaseRedSeeds = false;
 bool increaseBlueSeeds = false;
 
 bool sonicDied = false;
+bool deathlink = false;
+bool deathlinkActive = false;
 
 bool kronosUnlockedMapChanged = true;
 bool aresUnlockedMapChanged = true;
 bool chaosUnlockedMapChanged = true;
 bool ouranosUnlockedMapChanged = true;
+
+int* currentTrap;
+std::queue<int> trapQueue;
 
 std::vector<pair<string, bool>> unlockedKronosStages = { {"Portal1", false}, {"Portal7", false},{"Portal4", false}, {"Portal2", false},{"Portal3", false}, {"Portal6", false} };
 std::vector<pair<string, bool>> unlockedAresStages = { {"Portal1", false}, {"Portal0", false},{"Portal4", false}, {"Portal2", false},{"Portal5", false}, {"Portal6", false},{"Portal3", false} };
@@ -354,6 +368,8 @@ std::vector<app::player::BlackboardStatus::CombatFlag> skillVector = {
 	app::player::BlackboardStatus::CombatFlag::SPIN_DASH, app::player::BlackboardStatus::CombatFlag::AUTO_COMBO, app::player::BlackboardStatus::CombatFlag::AIR_TRICK,
 	app::player::BlackboardStatus::CombatFlag::SONIC_BOOM, app::player::BlackboardStatus::CombatFlag::SPIN_SLASH
 };
+
+
 void itemCallback();
 void getItem(int, bool);
 void* itemRecieve(int);
@@ -369,3 +385,4 @@ void setKocoSanity(bool);
 void setChallengeKoco(bool);
 void setMusicSanity(bool);
 void setPurpleCoinSanity(bool);
+void setDeathlink(bool);

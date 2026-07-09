@@ -32,7 +32,7 @@ void chaosDroppedGear(std::vector<hh::game::ObjectData*> chaosGearData, hh::game
 	for (int i = 0; i < chaosGearData.size(); i++) {
 		auto* obj = world->GetGameObject(chaosGearData[i]);
 		if (obj) {
-			if (!sphereColliderCheck(obj) && !chaosGearSent[i]) {
+			if (effectCheck(obj) && !chaosGearSent[i]) {
 				AP_SendItem(32000 + i);
 				chaosGearSent[i] = true;
 			}
@@ -122,7 +122,7 @@ void chaosKocoCheck(std::vector<hh::game::ObjectData*> chaosKocoData, hh::game::
 		if (!obj) {
 			continue;
 		}
-		csl::math::Vector3* scale = new csl::math::Vector3(3, 1, 1);
+		csl::math::Vector3* scale = new csl::math::Vector3(12, 12, 12);
 		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
 		if (!sphereColliderCheck(obj) && !chaosKocoSent[i]) {
 			AP_SendItem(36000 + i);

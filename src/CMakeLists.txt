@@ -7,9 +7,11 @@ target_sources(mod
         version.rc
         DllMain.cpp
         Mod.cpp
+        Traps.cpp
     PRIVATE FILE_SET HEADERS FILES
         Pch.h
         utilities/Helpers.h
         utilities/SimpleIni.h
         KronosDigSpots.h
+        Traps.h
 )

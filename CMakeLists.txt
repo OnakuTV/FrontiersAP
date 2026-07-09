@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(archipelago VERSION 0.1.6
+project(archipelago VERSION 0.1.7
                  DESCRIPTION "Archipelago"
                  LANGUAGES CXX)
 

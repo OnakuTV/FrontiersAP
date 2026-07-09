@@ -32,7 +32,7 @@ void aresDroppedGear(std::vector<hh::game::ObjectData*> aresGearData, hh::game::
 	for (int i = 0; i < aresGearData.size(); i++) {
 		auto* obj = world->GetGameObject(aresGearData[i]);
 		if (obj) {
-			if (!sphereColliderCheck(obj) && !aresGearSent[i]) {
+			if (effectCheck(obj) && !aresGearSent[i]) {
 				AP_SendItem(22000 + i);
 				aresGearSent[i] = true;
 			}
@@ -122,7 +122,7 @@ void aresKocoCheck(std::vector<hh::game::ObjectData*> aresKocoData, hh::game::Ob
 		if (!obj) {
 			continue;
 		}
-		csl::math::Vector3* scale = new csl::math::Vector3(1, 1, 1);
+		csl::math::Vector3* scale = new csl::math::Vector3(12, 12, 12);
 		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
 		if (!sphereColliderCheck(obj) && !aresKocoSent[i]) {
 			AP_SendItem(26000 + i);
