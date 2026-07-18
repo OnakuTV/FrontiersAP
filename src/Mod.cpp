@@ -320,6 +320,9 @@ EXPORT void OnFrame() {
 							if (goal == 0) {
 								AP_StoryComplete();
 							}
+							else {
+								AP_SendItem(17000);
+							}
 						}
 					}
 				}
@@ -349,7 +352,6 @@ EXPORT void OnFrame() {
 				}
 				getEmeralds(kronosEmeralds, gameData);
 			}
-			/*
 			//Ares Island
 			if (strcmp(levelInfo->GetStageName(), "w2r01") == 0) {
 				hh::game::ObjectWorldChunk* objChunk = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0];
@@ -425,7 +427,7 @@ EXPORT void OnFrame() {
 				if (hh::game::GameManager::GetInstance()->GetService<hh::dv::DiEventManager>()) {
 					hh::dv::DiEventManager* evtMngr = hh::game::GameManager::GetInstance()->GetService<hh::dv::DiEventManager>();
 					if (evtMngr->GetDvSceneControl()) {
-						printf("%s\n", evtMngr->GetDvSceneControl()->cutsceneName.c_str());
+						//printf("%s\n", evtMngr->GetDvSceneControl()->cutsceneName.c_str());
 						//Blue
 						if (evtMngr->GetDvSceneControl()->cutsceneName.Compare("ga2050") == 0 && !ga2120) {
 							ga2120 = true;
@@ -456,7 +458,7 @@ EXPORT void OnFrame() {
 							ga2135 = true;
 							AP_SendItem(21005);
 						}
-						if (evtMngr->GetDvSceneControl()->cutsceneName.Compare("goalCutscene") == 0) {
+						if (evtMngr->GetDvSceneControl()->cutsceneName.Compare("ev2150") == 0) {
 							AP_StoryComplete();
 						}
 					}
@@ -481,7 +483,7 @@ EXPORT void OnFrame() {
 					aRecievedGear = false;
 				}
 				getEmeralds(aresEmeralds, gameData);
-			}
+			}/*
 			//Chaos Island
 			if (strcmp(levelInfo->GetStageName(), "w3r01") == 0) {
 				hh::game::ObjectWorldChunk* objChunk = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0];
@@ -780,7 +782,7 @@ EXPORT void OnFrame() {
 					trapQueue.pop();
 				}
 			}
-			//trapCounter = handleTrap(trapCounter, currentTrap, manager);
+			trapCounter = handleTrap(trapCounter, currentTrap, manager);
 
 			if (deathlink) {
 				hh::game::GameObject* sonichsm = manager->GetGameObject("Sonic");
@@ -788,19 +790,22 @@ EXPORT void OnFrame() {
 					app::player::GOCPlayerHsm* hsm = sonichsm->GetComponent<app::player::GOCPlayerHsm>();
 					if (hsm) {
 						if ((hsm->GetCurrentState() == 39 || hsm->GetCurrentState() == 40 || hsm->GetCurrentState() == 41 || hsm->GetCurrentState() == 42
-							|| hsm->GetCurrentState() == 43 || hsm->GetCurrentState() == 45) && !deathlinkActive) {
+							|| hsm->GetCurrentState() == 43 || hsm->GetCurrentState() == 45) && !deathlinkActive && !deathlinkSent) {
 							AP_DeathLinkSend("Sonic Died");
+							deathlinkSent = true;
+
 						}
 						if (AP_DeathLinkPending()) {
 							hsm->ChangeState(39,1);
 							deathlinkActive = true;
+							AP_DeathLinkClear();
 						}
-						if((hsm->GetCurrentState() != 39 && hsm->GetCurrentState() != 40 && hsm->GetCurrentState() != 41 && hsm->GetCurrentState() != 42
+						else if((hsm->GetCurrentState() != 39 && hsm->GetCurrentState() != 40 && hsm->GetCurrentState() != 41 && hsm->GetCurrentState() != 42
 							&& hsm->GetCurrentState() != 43 && hsm->GetCurrentState() != 45)){
 							if (deathlinkActive) {
-								AP_DeathLinkClear();
 								deathlinkActive = false;
 							}
+							deathlinkSent = false;
 						}
 
 					}

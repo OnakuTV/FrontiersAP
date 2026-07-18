@@ -323,6 +323,7 @@ bool increaseBlueSeeds = false;
 bool sonicDied = false;
 bool deathlink = false;
 bool deathlinkActive = false;
+bool deathlinkSent = false;
 
 bool kronosUnlockedMapChanged = true;
 bool aresUnlockedMapChanged = true;

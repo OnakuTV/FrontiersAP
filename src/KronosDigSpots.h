@@ -53,7 +53,7 @@ bool sphereColliderCheck(hh::game::GameObject* obj) {
 	if (obj) {
 		hh::physics::GOCSphereCollider* collider = obj->GetComponent<hh::physics::GOCSphereCollider>();
 		if (collider) {
-			printf("%s: %d\n", obj->name.c_str(), collider->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED));
+			//printf("%s: %d\n", obj->name.c_str(), collider->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED));
 			return collider->flags.test(hh::physics::GOCSphereCollider::Flag::ENABLED);
 		}
 	}
