@@ -13,7 +13,7 @@ IncludeDirCount=1
 IncludeDir0="image"
 DependsCount=0
 DLLFile="${PROJECT_NAME}.dll"
-CodeFile=""
+CodeFile="archipelago.hmm"
 ConfigSchemaFile="config.json"
 [ArchipelagoInformation]
 Address="archipelago.gg:38281"

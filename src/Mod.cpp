@@ -41,6 +41,7 @@ bool challengeKocoSanity = false;
 bool musicNoteSanity = false;
 bool connected = false;
 
+std::list<hh::game::GameObject*> listOfObjects;
 
 EXPORT void Init()
 {
@@ -92,8 +93,8 @@ EXPORT void OnFrame() {
 	if (hh::game::GameApplication::GetInstance()->GetGameUpdater().layersActiveDuringIngamePause != -1) {
 		return;
 	}
-	if (manager->GetGameObject("Sonic")) {
-		hh::game::GameObject* sonic = manager->GetGameObject("Sonic");
+	hh::game::GameObject* sonic = manager->GetGameObject("Sonic");
+	if (sonic) {
 		textCounter++;
 		trapCounter++;
 	}
@@ -101,9 +102,28 @@ EXPORT void OnFrame() {
 		sonicDied = true;
 		return;
 	}
+	/*
+	hh::game::GameObject* obj = manager->GetGameObject("DestinationMarker");
+	if (obj) {
+		hh::game::GOCTransform *trans = obj->GetComponent<hh::game::GOCTransform>();
+		printf("%f, %f, %f\n", trans->transform.position[0], trans->transform.position[1], trans->transform.position[2]);
+		printf("%s\n", obj->objectClass->GetSpawnerDataClass()->GetName());
+		/*
+		const hh::game::GameObjectClass* pclass = obj->objectClass;
+		hh::game::GameObject* destMarker;
+		hh::fnd::WorldPosition* pos = new hh::fnd::WorldPosition;
+		csl::math::Vector3 vec3(0, 0, 0);
+		pos->m_Position[0] = vec3[0];
+		pos->m_Position[1] = vec3[1];
+		pos->m_Position[2] = vec3[2];
+		const char* name = "DestinationMarker2";
+		manager->AddGameObject(destMarker, name, true, pos, sonic);
+	}
+	return;
+	*/
 	if (firstRun) {
 		//AP_Init("localhost:38281", "Sonic Frontiers", "Onaku_Frontiers", "None");
-		//AP_Init("archipelago.gg:51808", "Sonic Frontiers", "Onaku_Frontiers", "None");
+		//AP_Init("archipelago.gg:54759", "Sonic Frontiers", "Onaku_Frontiers", "None");
 		AP_Init(serverAddress.c_str(), "Sonic Frontiers", serverUsername.c_str(), serverPassword.c_str());
 		AP_SetItemClearCallback(itemCallback);
 		AP_SetItemRecvCallback(&getItem);
@@ -164,6 +184,16 @@ EXPORT void OnFrame() {
 				}
 			}
 		}
+		if (auto* overlayService = manager->GetService<app::ui::UIOverlayService>()) {
+			auto* allocator = manager->GetAllocator();
+			auto* request = app::ui::RequestOverlayCaption::Create(allocator);
+			auto* caption = request->captions.Add({ .allocator = allocator });
+
+			caption->label.copyFrom("archipelago_connected");
+			caption->duration = 3.0f;
+			request->unk206 = 3;
+			overlayService->QueueBeginRequest(request);
+		}
 		connected = true;
 	}
 	if (AP_GetConnectionStatus() != AP_ConnectionStatus::Authenticated) {
@@ -211,7 +241,11 @@ EXPORT void OnFrame() {
 				if (!test) {
 					test = true;
 				}
+
 				hh::game::ObjectWorldChunk* objChunk = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0];
+
+				moveBlocksObjects(manager);
+
 				if (sonicDied || kronosUnlockedMapChanged) {
 					if (kronosSequnceItem.size() > 0) {
 						kronosSequnceItem.clear();
@@ -224,6 +258,7 @@ EXPORT void OnFrame() {
 						kronosDroppedItem.clear();
 					}
 					std::vector<hh::game::ObjectData*> sequenceItemVector;
+					int num = 0;
 					for (int i = 0; i < objChunk->GetObjectStatuses().size(); i++) {
 						hh::game::ObjectData* data = objChunk->GetObjectStatuses()[i].objectData;
 						if (data) {
@@ -232,6 +267,7 @@ EXPORT void OnFrame() {
 							}
 							else if (strcmp(data->gameObjectClass, "PortalBit") == 0) {
 								kronosPortalBit.emplace_back(data);
+								num++;
 							}
 							else if (strcmp(data->gameObjectClass, "StorageKey") == 0) {
 								kronosStorageKey.emplace_back(data);
@@ -416,7 +452,9 @@ EXPORT void OnFrame() {
 				aresMapCheck(manager);
 				aresMusicCheck(aresMusicNote, objChunk);
 				aresNewKocoCheck(aresNewKoco, objChunk);
-				aresKocoCheck(aresKocoSanity, objChunk);
+				if (kocoSanity) {
+					aresKocoCheck(aresKocoSanity, objChunk);
+				}
 				aresPurpleCoinCheck(aresPurpleCoins, objChunk);
 				int gearDiff = aresGears - gameData->worldFlags.worldDatas[1].byteFlags[1];
 				if (gearDiff > 0 && !aRecievedGear) {
@@ -459,7 +497,12 @@ EXPORT void OnFrame() {
 							AP_SendItem(21005);
 						}
 						if (evtMngr->GetDvSceneControl()->cutsceneName.Compare("ev2150") == 0) {
-							AP_StoryComplete();
+							if (goal == 1) {
+								AP_StoryComplete();
+							}
+							else {
+								AP_SendItem(27000);
+							}
 						}
 					}
 				}
@@ -483,7 +526,7 @@ EXPORT void OnFrame() {
 					aRecievedGear = false;
 				}
 				getEmeralds(aresEmeralds, gameData);
-			}/*
+			}
 			//Chaos Island
 			if (strcmp(levelInfo->GetStageName(), "w3r01") == 0) {
 				hh::game::ObjectWorldChunk* objChunk = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0];
@@ -760,7 +803,7 @@ EXPORT void OnFrame() {
 
 
 			}
-			*/
+			
 			
 			sonicDied = false;
 			cyberspaceChecks(gameData, randomizedOrder);
@@ -1205,7 +1248,10 @@ void contactRange(hh::game::GameObject* obj, int keys, int required) {
 	if (keys < required) {
 		contact->range = 0;
 	}
-	else if (keys >= required) {
+	else if (keys >= required && contact->range != 5) {
+		if (contact->range != 5) {
+			reloadEmeraldStorage(obj->gameManager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->GetObjectDataByName(obj->name).objectData, obj->gameManager, obj->gameManager->GetAllocator());
+		}
 		contact->range = 5;
 	}
 }
@@ -1233,6 +1279,15 @@ void lockCyberspace(hh::game::ObjectData* objData, string stageCode, ucsl::memor
 	}
 	//portalData->stageCode.SetDataUserFree(portalData->stageCode.GetAllocator(), stageCode.data());
 }
+void reloadEmeraldStorage(hh::game::ObjectData* objData, hh::game::GameManager* manager, ucsl::memory::IAllocator* bruh) {
+	if (objData) {
+		if (manager->GetGameObject(objData->name)) {
+			manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->Despawn(objData);
+			manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->ShutdownPendingObjects();
+			manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->Spawn(objData);
+		}
+	}
+}
 void getSlotData() {
 	AP_RegisterSlotDataIntCallback("Goal", &set_goal);
 }
@@ -1257,4 +1312,32 @@ void setPurpleCoinSanity(bool enabled) {
 
 void setDeathlink(bool enabled) {
 	deathlink = enabled;
+}
+void moveBlocksObjects(hh::game::GameManager* manager) {
+	if (hh::game::GameObject* blockObj = manager->GetGameObject("BlockObject60")) {
+		if (auto* comp = blockObj->GetComponent<hh::game::GOCActivator>()) {
+			blockObj->RemoveComponent(comp);
+			csl::math::Transform transform = blockObj->GetComponent<hh::game::GOCTransform>()->GetTransform();
+			transform.position[1] = 1000;
+			blockObj->GetComponent<hh::game::GOCTransform>()->SetLocalTransform(transform);
+		}
+	}
+	if (hh::game::GameObject* blockObj = manager->GetGameObject("BlockObject15")) {
+		if (auto* comp = blockObj->GetComponent<hh::game::GOCActivator>()) {
+			blockObj->RemoveComponent(comp);
+			csl::math::Transform transform = blockObj->GetComponent<hh::game::GOCTransform>()->GetTransform();
+			transform.position[1] = 1000;
+			blockObj->GetComponent<hh::game::GOCTransform>()->SetLocalTransform(transform);
+		}
+	}
+}
+void respawnObject(hh::game::GameObject* obj) {
+	hh::game::GameManager* manager = obj->gameManager;
+	if (!manager) return;
+	hh::game::ObjectData* objData = manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->GetObjectDataByName(obj->name).objectData;
+	if (!objData) return;
+
+	manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->Despawn(objData);
+	manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->ShutdownPendingObjects();
+	manager->GetService<app::game::ObjectWorldService>()->objectWorld->worldChunks[0]->Spawn(objData);
 }

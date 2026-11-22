@@ -1,3 +1,4 @@
+#include "KronosIDMaps.h"
 std::vector<bool> sent;
 bool sphereColliderCheck(hh::game::GameObject*);
 
@@ -10,10 +11,11 @@ void kronosMemCheck(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWor
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data.at(i));
 		if (obj) {
-			if ((!obj->GetComponent<hh::game::GOCActivator>()->enabled || obj->GetWorldObjectStatus()->IsShutdown()) && !sent[i]) {
-				auto* yay = static_cast<heur::rfl::ObjSequenceItemSpawner*>(data[i]->spawnerData);
-				AP_SendItem(10000 + yay->no);
-				sent[i] = true;
+			auto* yay = static_cast<heur::rfl::ObjSequenceItemSpawner*>(data[i]->spawnerData);
+			int id = kronosMemoryTokenIDMap.find(yay->no)->second;
+			if ((!obj->GetComponent<hh::game::GOCActivator>()->enabled || obj->GetWorldObjectStatus()->IsShutdown()) && !sent[id]) {
+				AP_SendItem(10000 + id);
+				sent[id] = true;
 			}
 		}
 	}

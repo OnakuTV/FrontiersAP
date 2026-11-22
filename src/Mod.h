@@ -387,3 +387,6 @@ void setChallengeKoco(bool);
 void setMusicSanity(bool);
 void setPurpleCoinSanity(bool);
 void setDeathlink(bool);
+void moveBlocksObjects(hh::game::GameManager*);
+void reloadEmeraldStorage(hh::game::ObjectData*, hh::game::GameManager*, ucsl::memory::IAllocator*);
+void respawnObject(hh::game::GameObject*);

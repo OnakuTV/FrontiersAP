@@ -6,8 +6,8 @@ std::vector<bool> ouranosMusicSent;
 std::vector<bool> ouranosPurpleCoinSent;
 std::vector<bool> ouranosKocoSent;
 void ouranosDroppedItemCheck(std::vector<hh::game::ObjectData*> ouranosDroppedItemData, hh::game::ObjectWorldChunk* world) {
-	if (ouranosDroppedItemSent.size() == 0) {
-		for (int i = 0; i < ouranosDroppedItemData.size() + 1; i++) {
+	if (ouranosDroppedItemSent.size() != ouranosDroppedItemData.size()) {
+		for (int i = ouranosDroppedItemSent.size(); i < ouranosDroppedItemData.size() + 1; i++) {
 			ouranosDroppedItemSent.emplace_back(false);
 		}
 	}
@@ -16,8 +16,10 @@ void ouranosDroppedItemCheck(std::vector<hh::game::ObjectData*> ouranosDroppedIt
 		if (obj) {
 			hh::physics::GOCCylinderCollider* cylinder = obj->GetComponent<hh::physics::GOCCylinderCollider>();
 			if (cylinder) {
-				if (!cylinder->flags.test(hh::physics::GOCCylinderCollider::Flag::ENABLED)) {
+				auto* yay = static_cast<heur::rfl::ObjDroppedItemSpawner*>(ouranosDroppedItemData[i]->spawnerData);
+				if (cylinder->flags.bits == 0 && !ouranosDroppedItemSent[i]) {
 					itemsToSend.push(40500 + i);
+					ouranosDroppedItemSent[i] = true;
 				}
 			}
 		}
@@ -32,6 +34,7 @@ void ouranosDroppedGear(std::vector<hh::game::ObjectData*> ouranosGearData, hh::
 	for (int i = 0; i < ouranosGearData.size(); i++) {
 		auto* obj = world->GetGameObject(ouranosGearData[i]);
 		if (obj) {
+			auto* yay = static_cast<heur::rfl::ObjPortalBitSpawner*>(ouranosGearData[i]->spawnerData);
 			if (effectCheck(obj) && !ouranosGearSent[i]) {
 				AP_SendItem(42000 + i);
 				ouranosGearSent[i] = true;
@@ -39,15 +42,16 @@ void ouranosDroppedGear(std::vector<hh::game::ObjectData*> ouranosGearData, hh::
 		}
 	}
 }
-void ouranosDroppedKey(std::vector<hh::game::ObjectData*> data, hh::game::ObjectWorldChunk* world) {
+void ouranosDroppedKey(std::vector<hh::game::ObjectData*> ouranosKeyData, hh::game::ObjectWorldChunk* world) {
 	if (ouranosKeySent.size() == 0) {
-		for (int i = 0; i < data.size(); i++) {
+		for (int i = 0; i < ouranosKeyData.size(); i++) {
 			ouranosKeySent.emplace_back(false);
 		}
 	}
-	for (int i = 0; i < data.size(); i++) {
-		auto* obj = world->GetGameObject(data[i]);
+	for (int i = 0; i < ouranosKeyData.size(); i++) {
+		auto* obj = world->GetGameObject(ouranosKeyData[i]);
 		if (obj) {
+			auto* yay = static_cast<heur::rfl::ObjStorageKeySpawner*>(ouranosKeyData[i]->spawnerData);
 			if (hh::physics::GOCCylinderCollider* collider = obj->GetComponent<hh::physics::GOCCylinderCollider>()) {
 				if (!sphereColliderCheck(obj) && !collider->flags.test(hh::physics::GOCCylinderCollider::Flag::ENABLED) && !ouranosKeySent[i]) {
 					AP_SendItem(43000 + i);
@@ -72,6 +76,7 @@ void ouranosMusicCheck(std::vector<hh::game::ObjectData*> data, hh::game::Object
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data[i]);
 		if (obj) {
+			auto* yay = static_cast<heur::rfl::ObjMusicMemorySpawner*>(data[i]->spawnerData);
 			if (!sphereColliderCheck(obj) && !ouranosMusicSent[i]) {
 				AP_SendItem(41500 + i);
 				ouranosMusicSent[i] = true;
@@ -88,6 +93,7 @@ void ouranosNewKocoCheck(std::vector<hh::game::ObjectData*> data, hh::game::Obje
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data[i]);
 		if (obj) {
+			auto* yay = static_cast<heur::rfl::ObjKodamaNewFormSpawner*>(data[i]->spawnerData);
 			if (!sphereColliderCheck(obj) && !ouranosNewKocoSent[i]) {
 				AP_SendItem(42500 + i);
 				ouranosNewKocoSent[i] = true;
@@ -104,9 +110,10 @@ void ouranosPurpleCoinCheck(std::vector<hh::game::ObjectData*> data, hh::game::O
 	for (int i = 0; i < data.size(); i++) {
 		auto* obj = world->GetGameObject(data[i]);
 		if (obj) {
+			auto* yay = static_cast<heur::rfl::ObjFishCoinSpawner*>(data[i]->spawnerData);
 			if (!sphereColliderCheck(obj) && !ouranosPurpleCoinSent[i]) {
-				AP_SendItem(44000 + i);
-				ouranosPurpleCoinSent[i] = true;
+				AP_SendItem(44000 + i - 1);
+				ouranosPurpleCoinSent[i - 1] = true;
 			}
 		}
 	}
@@ -124,6 +131,7 @@ void ouranosKocoCheck(std::vector<hh::game::ObjectData*> ouranosKocoData, hh::ga
 		}
 		csl::math::Vector3* scale = new csl::math::Vector3(12, 12, 12);
 		obj->GetComponent<hh::gfx::GOCVisualModel>()->SetLocalScale(*scale);
+		auto* yay = static_cast<heur::rfl::ObjKodamaSpawner*>(ouranosKocoData[i]->spawnerData);
 		if (!sphereColliderCheck(obj) && !ouranosKocoSent[i]) {
 			AP_SendItem(46000 + i);
 			ouranosKocoSent[i] = true;

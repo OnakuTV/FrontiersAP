@@ -14,4 +14,5 @@ target_sources(mod
         utilities/SimpleIni.h
         KronosDigSpots.h
         Traps.h
+        KronosIDMaps.h
 )
